@@ -34,4 +34,7 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
+# Ignorar archivos de cookies de Watchman
+.watchman-cookie*
+
 app-example
