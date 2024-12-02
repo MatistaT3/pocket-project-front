@@ -37,4 +37,6 @@ yarn-error.*
 # Ignorar archivos de cookies de Watchman
 .watchman-cookie*
 
+.env
+
 app-example
