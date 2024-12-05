@@ -5,8 +5,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        oxfordBlue: "#212A37",
-        gofuniro: "#FFFFFC",
+        oxfordBlue: "#0A1128",
+        turquoise: "#40E0D0",
       },
     },
   },

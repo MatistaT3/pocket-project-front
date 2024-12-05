@@ -4,12 +4,12 @@ import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthContext";
 
 export default function Auth() {
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const [fullName, setFullName] = useState("");
+
   async function signInWithEmail() {
     setLoading(true);
     try {
@@ -38,20 +38,23 @@ export default function Auth() {
         password,
         options: {
           data: {
-            username,
-            fullName,
+            full_name: fullName,
+            created_at: new Date().toISOString(),
           },
         },
       });
 
       if (error) {
         Alert.alert("Error", error.message);
-      } else {
-        Alert.alert("Success", "Check your email for the confirmation link!");
+      } else if (!session) {
+        Alert.alert(
+          "Verifica tu correo",
+          "Te hemos enviado un enlace de confirmación a tu correo electrónico"
+        );
       }
     } catch (error) {
       console.error(error);
-      Alert.alert("Error", "An unexpected error occurred");
+      Alert.alert("Error", "Ocurrió un error inesperado");
     } finally {
       setLoading(false);
     }
@@ -65,21 +68,6 @@ export default function Auth() {
         </Text>
 
         <View className="space-y-4">
-          {!isLogin && (
-            <View>
-              <Text className="text-gray-400 mb-2 text-sm">
-                Nombre de usuario
-              </Text>
-              <TextInput
-                className="bg-gray-700 text-white px-4 py-3 rounded-xl"
-                onChangeText={setUsername}
-                value={username}
-                placeholder="Nombre de usuario"
-                placeholderTextColor="#9CA3AF"
-                autoCapitalize="none"
-              />
-            </View>
-          )}
           {!isLogin && (
             <View>
               <Text className="text-gray-400 mb-2 text-sm">

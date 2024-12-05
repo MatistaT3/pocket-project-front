@@ -6,7 +6,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 export function MainContent() {
   return (
     <GestureHandlerRootView>
-      <View className="p-4">
+      <View className="p-6">
         <Calendar />
       </View>
     </GestureHandlerRootView>
