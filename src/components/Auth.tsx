@@ -1,145 +1,94 @@
 import React, { useState } from "react";
-import { Alert, View, Text, TextInput, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Pressable,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import { supabase } from "../lib/supabase";
-import { useAuth } from "../context/AuthContext";
 
-export default function Auth() {
+export function Auth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isLogin, setIsLogin] = useState(true);
-  const [fullName, setFullName] = useState("");
 
   async function signInWithEmail() {
     setLoading(true);
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-      if (error) Alert.alert("Error", error.message);
-    } catch (error) {
-      console.error(error);
-      Alert.alert("Error", "An unexpected error occurred");
-    } finally {
-      setLoading(false);
-    }
+    if (error) Alert.alert(error.message);
+    setLoading(false);
   }
 
   async function signUpWithEmail() {
     setLoading(true);
-    try {
-      const {
-        data: { session },
-        error,
-      } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            full_name: fullName,
-            created_at: new Date().toISOString(),
-          },
-        },
-      });
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
 
-      if (error) {
-        Alert.alert("Error", error.message);
-      } else if (!session) {
-        Alert.alert(
-          "Verifica tu correo",
-          "Te hemos enviado un enlace de confirmación a tu correo electrónico"
-        );
-      }
-    } catch (error) {
-      console.error(error);
-      Alert.alert("Error", "Ocurrió un error inesperado");
-    } finally {
-      setLoading(false);
-    }
+    if (error) Alert.alert(error.message);
+    else Alert.alert("Revisa tu email para confirmar tu cuenta");
+    setLoading(false);
   }
 
   return (
-    <View className="flex-1 justify-center p-6">
-      <View className="bg-oxfordBlue rounded-3xl p-8 shadow-xl">
-        <Text className="text-white text-2xl font-bold mb-8 text-center">
-          {isLogin ? "Iniciar Sesión" : "Registrarse"}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      className="flex-1 bg-oxfordBlue"
+    >
+      <View className="flex-1 justify-center px-4">
+        <Text className="text-sand text-4xl font-bold mb-8 text-center">
+          Pocket Money
         </Text>
-
         <View className="space-y-4">
-          {!isLogin && (
-            <View>
-              <Text className="text-gray-400 mb-2 text-sm">
-                Nombre completo
-              </Text>
-              <TextInput
-                className="bg-gray-700 text-white px-4 py-3 rounded-xl"
-                onChangeText={setFullName}
-                value={fullName}
-                placeholder="Nombre completo"
-                placeholderTextColor="#9CA3AF"
-                autoCapitalize="none"
-                textContentType="name"
-              />
-            </View>
-          )}
+          <TextInput
+            className="bg-teal/10 text-sand p-4 rounded-xl"
+            placeholder="Email"
+            placeholderTextColor="#FAA968"
+            value={email}
+            autoCapitalize="none"
+            onChangeText={setEmail}
+          />
+          <TextInput
+            className="bg-teal/10 text-sand p-4 rounded-xl"
+            placeholder="Password"
+            placeholderTextColor="#FAA968"
+            value={password}
+            autoCapitalize="none"
+            secureTextEntry
+            onChangeText={setPassword}
+          />
+        </View>
 
-          <View>
-            <Text className="text-gray-400 mb-2 text-sm">Correo</Text>
-            <TextInput
-              className="bg-gray-700 text-white px-4 py-3 rounded-xl"
-              onChangeText={setEmail}
-              value={email}
-              placeholder="correo@ejemplo.com"
-              placeholderTextColor="#9CA3AF"
-              autoCapitalize="none"
-              keyboardType="email-address"
-              textContentType="emailAddress"
-            />
-          </View>
-
-          <View>
-            <Text className="text-gray-400 mb-2 text-sm">Contraseña</Text>
-            <TextInput
-              className="bg-gray-700 text-white px-4 py-3 rounded-xl"
-              onChangeText={setPassword}
-              value={password}
-              secureTextEntry={true}
-              placeholder="Contraseña"
-              placeholderTextColor="#9CA3AF"
-              autoCapitalize="none"
-              textContentType="password"
-            />
-          </View>
-
-          <TouchableOpacity
-            className={`bg-turquoise p-4 rounded-xl mt-4 ${
-              loading ? "opacity-50" : ""
-            }`}
-            onPress={() => (isLogin ? signInWithEmail() : signUpWithEmail())}
+        <View className="flex-row justify-between mt-8 space-x-4">
+          <Pressable
+            className="flex-1 bg-teal p-4 rounded-xl"
             disabled={loading}
+            onPress={() => signInWithEmail()}
           >
-            <Text className="text-white text-center font-semibold">
-              {isLogin ? "Iniciar sesión" : "Registrarse"}
+            <Text className="text-sand text-center font-semibold">
+              {loading ? "Cargando..." : "Iniciar Sesión"}
             </Text>
-          </TouchableOpacity>
+          </Pressable>
 
-          <View className="flex-row justify-center items-center mt-4">
-            <Text className="text-gray-400">
-              {isLogin ? "¿No tienes una cuenta?" : "¿Ya tienes una cuenta?"}
+          <Pressable
+            className="flex-1 bg-orange p-4 rounded-xl"
+            disabled={loading}
+            onPress={() => signUpWithEmail()}
+          >
+            <Text className="text-sand text-center font-semibold">
+              {loading ? "Cargando..." : "Registrarse"}
             </Text>
-            <TouchableOpacity
-              onPress={() => setIsLogin(!isLogin)}
-              className="ml-2"
-            >
-              <Text className="text-turquoise">
-                {isLogin ? "Regístrate" : "Inicia sesión"}
-              </Text>
-            </TouchableOpacity>
-          </View>
+          </Pressable>
         </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }

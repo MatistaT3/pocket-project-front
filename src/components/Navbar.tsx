@@ -1,48 +1,60 @@
-import React from "react";
-import { View, TouchableOpacity, Platform } from "react-native";
-import { Home, Plus } from "lucide-react-native";
-import { useRouter } from "expo-router";
-import { BlurView } from "expo-blur";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import React, { useState } from "react";
+import { View, Pressable, Text } from "react-native";
+import { Home, Plus, CreditCard } from "lucide-react-native";
+import { AddTransactionModal } from "./AddTransactionModal";
+import { BankAccountsModal } from "./BankAccountsModal";
 
 export function Navbar() {
-  const router = useRouter();
-  const { bottom } = useSafeAreaInsets();
+  const [addModalVisible, setAddModalVisible] = useState(false);
+  const [bankAccountsModalVisible, setBankAccountsModalVisible] =
+    useState(false);
 
   return (
-    <View
-      className="absolute bottom-0 left-0 right-0"
-      style={{ paddingBottom: bottom }}
-    >
-      {Platform.OS === "ios" ? (
-        <BlurView
-          intensity={20}
-          className="absolute inset-0"
-          style={{ bottom: -bottom }}
-        />
-      ) : (
-        <View
-          className="absolute inset-0 bg-oxfordBlue/90"
-          style={{ bottom: -bottom }}
-        />
-      )}
+    <>
+      <View className="mt-auto">
+        <View className="bg-teal rounded-t-[40px]">
+          <View className="h-24 flex-row items-center justify-between px-6">
+            <View className="items-center">
+              <Pressable className="p-3">
+                <Home size={32} color="white" />
+              </Pressable>
+              <Text className="text-white text-sm">Home</Text>
+            </View>
 
-      <View className="h-16">
-        <View className="flex-row justify-between items-center h-full px-4 relative">
-          <TouchableOpacity className="p-3" onPress={() => router.push("/")}>
-            <Home size={24} color="white" />
-          </TouchableOpacity>
+            <View className="items-center">
+              <Pressable
+                className="p-3"
+                onPress={() => setBankAccountsModalVisible(true)}
+              >
+                <CreditCard size={32} color="white" />
+              </Pressable>
+              <Text className="text-white text-sm">Cuentas</Text>
+            </View>
+          </View>
 
-          <TouchableOpacity
-            className="absolute left-1/2 -translate-x-1/2 -top-6 w-14 h-14 bg-turquoise rounded-full items-center justify-center shadow-lg"
-            style={{ transform: [{ translateX: -28 }] }}
+          <Pressable
+            className="absolute left-1/2 -top-10 bg-orange w-20 h-20 rounded-full items-center justify-center shadow-xl border-4 border-oxfordBlue"
+            style={{ transform: [{ translateX: -40 }] }}
+            onPress={() => setAddModalVisible(true)}
           >
-            <Plus size={24} color="white" />
-          </TouchableOpacity>
+            <Plus size={36} color="white" />
+          </Pressable>
 
-          <View className="w-10 h-10" />
+          <View className="h-6 bg-teal" />
         </View>
+
+        <View className="h-20 bg-teal -mt-1" style={{ marginBottom: -50 }} />
       </View>
-    </View>
+
+      <AddTransactionModal
+        visible={addModalVisible}
+        onClose={() => setAddModalVisible(false)}
+      />
+
+      <BankAccountsModal
+        visible={bankAccountsModalVisible}
+        onClose={() => setBankAccountsModalVisible(false)}
+      />
+    </>
   );
 }

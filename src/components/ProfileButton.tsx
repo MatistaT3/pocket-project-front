@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Modal } from "react-native";
-import { UserCircle } from "lucide-react-native";
+import { View, Text, Pressable, Modal } from "react-native";
+import { User } from "lucide-react-native";
 import { useAuth } from "../context/AuthContext";
 
 export function ProfileButton() {
@@ -9,9 +9,12 @@ export function ProfileButton() {
 
   return (
     <>
-      <TouchableOpacity onPress={() => setIsModalVisible(true)}>
-        <UserCircle size={32} color="white" />
-      </TouchableOpacity>
+      <Pressable
+        onPress={() => setIsModalVisible(true)}
+        className="bg-teal/20 p-2 rounded-full"
+      >
+        <User size={24} color="#F6DCAC" />
+      </Pressable>
 
       <Modal
         visible={isModalVisible}
@@ -19,30 +22,29 @@ export function ProfileButton() {
         animationType="fade"
         onRequestClose={() => setIsModalVisible(false)}
       >
-        <TouchableOpacity
-          className="flex-1 bg-black/50"
-          activeOpacity={1}
+        <Pressable
+          className="flex-1 bg-oxfordBlue/50"
           onPress={() => setIsModalVisible(false)}
         >
           <View className="absolute top-16 right-4 bg-oxfordBlue rounded-2xl p-4 w-64 shadow-xl">
-            <TouchableOpacity className="py-3 px-4 hover:bg-gray-800 rounded-lg">
-              <Text className="text-white">Mi perfil</Text>
-            </TouchableOpacity>
-            <TouchableOpacity className="py-3 px-4 hover:bg-gray-800 rounded-lg">
-              <Text className="text-white">Configuración</Text>
-            </TouchableOpacity>
-            <TouchableOpacity className="py-3 px-4 hover:bg-gray-800 rounded-lg">
-              <Text className="text-white">Ayuda</Text>
-            </TouchableOpacity>
-            <View className="h-[1px] bg-gray-700 my-2" />
-            <TouchableOpacity
-              className="py-3 px-4 hover:bg-gray-800 rounded-lg"
+            <Pressable className="py-3 px-4 bg-teal/10 rounded-lg">
+              <Text className="text-sand">Mi perfil</Text>
+            </Pressable>
+            <Pressable className="py-3 px-4 bg-teal/10 rounded-lg mt-2">
+              <Text className="text-sand">Configuración</Text>
+            </Pressable>
+            <Pressable className="py-3 px-4 bg-teal/10 rounded-lg mt-2">
+              <Text className="text-sand">Ayuda</Text>
+            </Pressable>
+            <View className="h-[1px] bg-teal/20 my-2" />
+            <Pressable
+              className="py-3 px-4 bg-orange/20 rounded-lg"
               onPress={signOut}
             >
-              <Text className="text-red-500">Cerrar sesión</Text>
-            </TouchableOpacity>
+              <Text className="text-orange">Cerrar sesión</Text>
+            </Pressable>
           </View>
-        </TouchableOpacity>
+        </Pressable>
       </Modal>
     </>
   );

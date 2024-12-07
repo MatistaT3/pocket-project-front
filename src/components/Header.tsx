@@ -1,13 +1,11 @@
+import React from "react";
 import { View, Text } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export function Header() {
-  const { top } = useSafeAreaInsets();
-
   return (
-    <View style={{ paddingTop: top }}>
-      <View className="px-4 lg:px-6 h-14 flex items-center flex-row justify-between">
-        <Text className="text-white text-2xl font-bold">Pocket Money</Text>
+    <View className="bg-oxfordBlue px-6 pt-14 pb-4">
+      <View className="flex-row justify-between items-center">
+        <Text className="text-sand text-2xl font-bold">Pocket Money</Text>
       </View>
     </View>
   );

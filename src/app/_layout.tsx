@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import { Slot } from "expo-router";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import Auth from "../components/Auth";
+import { Auth } from "../components/Auth";
 import { AuthProvider, useAuth } from "../context/AuthContext";
 import { ProfileButton } from "../components/ProfileButton";
 import { Navbar } from "../components/Navbar";

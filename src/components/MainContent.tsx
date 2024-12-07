@@ -5,8 +5,8 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export function MainContent() {
   return (
-    <GestureHandlerRootView>
-      <View className="p-6">
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <View className="flex-1">
         <Calendar />
       </View>
     </GestureHandlerRootView>

@@ -5,8 +5,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        oxfordBlue: "#0A1128",
-        turquoise: "#40E0D0",
+        oxfordBlue: "#012040",
+        teal: "#028391",
+        sand: "#F6DCAC",
+        coral: "#FAA968",
+        orange: "#F85525",
       },
     },
   },
