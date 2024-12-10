@@ -14,7 +14,7 @@ function RootLayout() {
 
   if (!session) {
     return (
-      <View className="flex-1 bg-oxfordBlue">
+      <View className="flex-1 bg-background">
         <SafeAreaView edges={["top"]} className="flex-1">
           <Auth />
         </SafeAreaView>
@@ -23,7 +23,7 @@ function RootLayout() {
   }
 
   return (
-    <View className="flex-1 bg-oxfordBlue">
+    <View className="flex-1 bg-background">
       <SafeAreaView edges={["top"]} className="flex-1">
         <View className="flex-1">
           <View className="absolute right-4 top-4 z-10">

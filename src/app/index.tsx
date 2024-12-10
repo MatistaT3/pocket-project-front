@@ -7,7 +7,7 @@ import { Header } from "@/components/Header";
 
 export default function Page() {
   return (
-    <View className="flex flex-1 bg-oxfordBlue">
+    <View className="flex flex-1 bg-background">
       <Header />
       <MainContent />
     </View>
