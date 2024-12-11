@@ -8,6 +8,7 @@ interface AddCardModalProps {
   onClose: () => void;
   accountId: string;
   onCardAdded: (cardId: string) => void;
+  onSuccess?: () => Promise<void>;
 }
 
 export function AddCardModal({
@@ -15,6 +16,7 @@ export function AddCardModal({
   onClose,
   accountId,
   onCardAdded,
+  onSuccess,
 }: AddCardModalProps) {
   const { addCard } = useBanks();
   const [cardForm, setCardForm] = useState({
@@ -41,6 +43,7 @@ export function AddCardModal({
       );
 
       onCardAdded(newCard.id);
+      await onSuccess?.();
       setCardForm({ lastFourDigits: "", type: "debit" });
       onClose();
     } catch (error) {

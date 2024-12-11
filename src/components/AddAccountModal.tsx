@@ -8,6 +8,7 @@ interface AddAccountModalProps {
   onClose: () => void;
   bankId: string;
   onAccountAdded: (accountId: string) => void;
+  onSuccess?: () => Promise<void>;
 }
 
 export function AddAccountModal({
@@ -15,11 +16,12 @@ export function AddAccountModal({
   onClose,
   bankId,
   onAccountAdded,
+  onSuccess,
 }: AddAccountModalProps) {
   const { addAccount } = useBanks();
   const [accountForm, setAccountForm] = useState({
     accountNumber: "",
-    initialBalance: "0",
+    initialBalance: "",
   });
 
   const handleSubmit = async () => {
@@ -29,14 +31,21 @@ export function AddAccountModal({
         return;
       }
 
+      const balance = parseFloat(accountForm.initialBalance);
+      if (isNaN(balance)) {
+        Alert.alert("Error", "Por favor ingresa un saldo válido");
+        return;
+      }
+
       const newAccount = await addAccount(
         bankId,
         accountForm.accountNumber,
-        parseFloat(accountForm.initialBalance) || 0
+        balance
       );
 
       onAccountAdded(newAccount.id);
-      setAccountForm({ accountNumber: "", initialBalance: "0" });
+      await onSuccess?.();
+      setAccountForm({ accountNumber: "", initialBalance: "" });
       onClose();
     } catch (error) {
       Alert.alert("Error", "No se pudo agregar la cuenta");

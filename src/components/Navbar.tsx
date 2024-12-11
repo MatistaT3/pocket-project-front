@@ -3,11 +3,13 @@ import { View, Pressable, Text } from "react-native";
 import { Home, Plus, CreditCard } from "lucide-react-native";
 import { AddTransactionModal } from "./AddTransactionModal";
 import { BankAccountsModal } from "./BankAccountsModal";
+import { useTransactions } from "../hooks/useTransactions";
 
 export function Navbar() {
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [bankAccountsModalVisible, setBankAccountsModalVisible] =
     useState(false);
+  const { refreshTransactions } = useTransactions();
 
   return (
     <>
@@ -49,6 +51,7 @@ export function Navbar() {
       <AddTransactionModal
         visible={addModalVisible}
         onClose={() => setAddModalVisible(false)}
+        onSuccess={refreshTransactions}
       />
 
       <BankAccountsModal

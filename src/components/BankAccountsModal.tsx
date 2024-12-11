@@ -15,7 +15,7 @@ export function BankAccountsModal({
   visible,
   onClose,
 }: BankAccountsModalProps) {
-  const { banks } = useBanks();
+  const { banks, refreshBanks } = useBanks();
   const [selectedBank, setSelectedBank] = useState<string | null>(null);
   const [selectedAccount, setSelectedAccount] = useState<string | null>(null);
 
@@ -164,6 +164,7 @@ export function BankAccountsModal({
           setSelectedBank(bankId);
           setAddBankVisible(false);
         }}
+        onSuccess={refreshBanks}
       />
 
       {selectedBank && (
@@ -175,6 +176,7 @@ export function BankAccountsModal({
             setSelectedAccount(accountId);
             setAddAccountVisible(false);
           }}
+          onSuccess={refreshBanks}
         />
       )}
 
@@ -186,6 +188,7 @@ export function BankAccountsModal({
           onCardAdded={() => {
             setAddCardVisible(false);
           }}
+          onSuccess={refreshBanks}
         />
       )}
     </>

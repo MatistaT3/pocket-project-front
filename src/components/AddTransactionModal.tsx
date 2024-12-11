@@ -22,11 +22,13 @@ import { Building2, CreditCard, ChevronRight } from "lucide-react-native";
 interface AddTransactionModalProps {
   visible: boolean;
   onClose: () => void;
+  onSuccess?: () => Promise<void>;
 }
 
 export function AddTransactionModal({
   visible,
   onClose,
+  onSuccess,
 }: AddTransactionModalProps) {
   const { addTransaction } = useTransactions();
   const { banks } = useBanks();
@@ -117,6 +119,8 @@ export function AddTransactionModal({
       await addTransaction(transaction, {
         accountNumber: selectedAccountData!.accountNumber,
       });
+
+      await onSuccess?.();
       Alert.alert("Éxito", "Transacción agregada correctamente");
       onClose();
       setFormData({

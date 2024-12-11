@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Pressable, Text } from "react-native";
 import { ChevronLeft, ChevronRight } from "lucide-react-native";
 import {
@@ -9,6 +9,7 @@ import {
   eachDayOfInterval,
   startOfWeek,
   endOfWeek,
+  isSameDay,
 } from "date-fns";
 import { GestureDetector, Gesture } from "react-native-gesture-handler";
 import Animated, {
@@ -22,49 +23,25 @@ import { useTransactions } from "../hooks/useTransactions";
 import { DynamicIcon } from "./DynamicIcon";
 
 export function Calendar() {
-  const { transactions, loading } = useTransactions();
-  const [modalVisible, setModalVisible] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [detailsModalVisible, setDetailsModalVisible] = useState(false);
-  const translateX = useSharedValue(0);
+  const { transactions, loading, fetchTransactions } = useTransactions();
 
-  const monthStart = startOfMonth(currentDate);
-  const monthEnd = endOfMonth(currentDate);
-  const calendarStart = startOfWeek(monthStart, { weekStartsOn: 1 });
-  const calendarEnd = endOfWeek(monthEnd, { weekStartsOn: 1 });
+  // Cargar transacciones cuando cambie el mes
+  useEffect(() => {
+    fetchTransactions(currentDate);
+  }, [currentDate]);
 
-  const daysInMonth = eachDayOfInterval({
-    start: calendarStart,
-    end: calendarEnd,
-  });
+  const handlePrevMonth = () => {
+    const newDate = new Date(currentDate.setMonth(currentDate.getMonth() - 1));
+    setCurrentDate(new Date(newDate));
+  };
 
-  const totalMonthlySpend = transactions
-    .filter((t) => t.category === "subscription")
-    .reduce((total, t) => total + t.amount, 0);
-
-  const weekDays = ["LUN", "MAR", "MIÉ", "JUE", "VIE", "SÁB", "DOM"];
-
-  const handlePrevMonth = () => setCurrentDate(subMonths(currentDate, 1));
-  const handleNextMonth = () => setCurrentDate(addMonths(currentDate, 1));
-
-  const swipeGesture = Gesture.Pan()
-    .runOnJS(true)
-    .onUpdate((e) => {
-      translateX.value = e.translationX;
-    })
-    .onEnd((e) => {
-      if (e.translationX > 100) {
-        handlePrevMonth();
-      } else if (e.translationX < -100) {
-        handleNextMonth();
-      }
-      translateX.value = withSpring(0);
-    });
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: translateX.value }],
-  }));
+  const handleNextMonth = () => {
+    const newDate = new Date(currentDate.setMonth(currentDate.getMonth() + 1));
+    setCurrentDate(new Date(newDate));
+  };
 
   const getTransactionsForDate = (dateInput: Date | string) => {
     try {
@@ -108,6 +85,42 @@ export function Calendar() {
     }
   };
 
+  const monthStart = startOfMonth(currentDate);
+  const monthEnd = endOfMonth(currentDate);
+  const calendarStart = startOfWeek(monthStart, { weekStartsOn: 1 });
+  const calendarEnd = endOfWeek(monthEnd, { weekStartsOn: 1 });
+
+  const daysInMonth = eachDayOfInterval({
+    start: calendarStart,
+    end: calendarEnd,
+  });
+
+  const totalMonthlySpend = transactions
+    .filter((t) => t.category === "subscription")
+    .reduce((total, t) => total + t.amount, 0);
+
+  const weekDays = ["LUN", "MAR", "MIÉ", "JUE", "VIE", "SÁB", "DOM"];
+
+  const translateX = useSharedValue(0);
+
+  const swipeGesture = Gesture.Pan()
+    .runOnJS(true)
+    .onUpdate((e) => {
+      translateX.value = e.translationX;
+    })
+    .onEnd((e) => {
+      if (e.translationX > 100) {
+        handlePrevMonth();
+      } else if (e.translationX < -100) {
+        handleNextMonth();
+      }
+      translateX.value = withSpring(0);
+    });
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: translateX.value }],
+  }));
+
   const handleDatePress = (date: Date) => {
     const formattedDate = formatDate(date);
     setSelectedDate(formattedDate);
@@ -115,26 +128,26 @@ export function Calendar() {
   };
 
   return (
-    <View className="bg-teal/5 p-4 rounded-3xl overflow-hidden border border-teal/10">
+    <View className="bg-white p-4 rounded-3xl overflow-hidden border border-veryPaleBlue/10">
       <GestureDetector gesture={swipeGesture}>
         <Animated.View style={animatedStyle}>
           {/* Header */}
           <View className="flex-row justify-between items-center mb-6">
             <View className="flex-row items-center space-x-4">
               <Pressable onPress={handlePrevMonth}>
-                <ChevronLeft size={24} color="#F6DCAC" />
+                <ChevronLeft size={24} color="#755bce" />
               </Pressable>
               <Pressable onPress={handleNextMonth}>
-                <ChevronRight size={24} color="#F6DCAC" />
+                <ChevronRight size={24} color="#755bce" />
               </Pressable>
-              <Text className="text-sand text-3xl font-bold">
+              <Text className="text-textPrimary text-3xl font-bold">
                 {formatDate(currentDate, DATE_FORMAT.MONTH_YEAR)}
               </Text>
             </View>
             <View>
-              <Text className="text-coral text-lg">Monthly Spend</Text>
-              <Text className="text-sand text-2xl font-bold">
-                ${totalMonthlySpend.toFixed(2)}
+              <Text className="text-textSecondary text-lg">Gasto mensual</Text>
+              <Text className="text-textPrimary text-2xl font-bold">
+                ${totalMonthlySpend.toFixed(0)}
               </Text>
             </View>
           </View>
@@ -143,7 +156,7 @@ export function Calendar() {
           <View className="flex-row justify-between mb-4">
             {weekDays.map((day) => (
               <View key={day} className="flex-1 items-center">
-                <Text className="text-teal font-medium">{day}</Text>
+                <Text className="text-textSecondary font-medium">{day}</Text>
               </View>
             ))}
           </View>
@@ -156,15 +169,22 @@ export function Calendar() {
               const hasTransactions = transactionsForDate.length > 0;
               const displayTransactions = transactionsForDate.slice(0, 2);
               const hasMoreTransactions = transactionsForDate.length > 2;
+              const isToday = isSameDay(date, new Date());
 
               return (
                 <Pressable
                   key={dateStr}
                   className={`w-[14%] h-12 items-center justify-between rounded-2xl py-1
-                    ${hasTransactions ? "bg-teal/20" : "bg-oxfordBlue/50"}`}
+                    ${isToday ? "bg-moderateBlue/10" : ""}`}
                   onPress={() => handleDatePress(date)}
                 >
-                  <Text className="text-sand">
+                  <Text
+                    className={`${
+                      isToday
+                        ? "text-textSecondary font-bold"
+                        : "text-textPrimary"
+                    }`}
+                  >
                     {formatDate(date, DATE_FORMAT.DAY)}
                   </Text>
                   {hasTransactions && (
@@ -175,14 +195,13 @@ export function Calendar() {
                           style={{ marginLeft: index > 0 ? -4 : 0 }}
                         >
                           <DynamicIcon
-                            svgPath={transaction.icon_data?.svg_path}
                             fallbackType={transaction.type}
                             size={16}
                           />
                         </View>
                       ))}
                       {hasMoreTransactions && (
-                        <Text className="text-white text-xs ml-1">
+                        <Text className="text-textSecondary text-xs ml-1">
                           +{transactionsForDate.length - 2}
                         </Text>
                       )}
@@ -196,7 +215,7 @@ export function Calendar() {
           <TransactionDetails
             visible={detailsModalVisible}
             onClose={() => setDetailsModalVisible(false)}
-            selectedDate={selectedDate}
+            date={selectedDate || ""}
             transactions={
               selectedDate ? getTransactionsForDate(selectedDate) : []
             }

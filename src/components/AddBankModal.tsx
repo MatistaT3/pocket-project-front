@@ -7,12 +7,14 @@ interface AddBankModalProps {
   visible: boolean;
   onClose: () => void;
   onBankAdded: (bankId: string) => void;
+  onSuccess?: () => Promise<void>;
 }
 
 export function AddBankModal({
   visible,
   onClose,
   onBankAdded,
+  onSuccess,
 }: AddBankModalProps) {
   const { addBank } = useBanks();
   const [bankName, setBankName] = useState("");
@@ -26,6 +28,7 @@ export function AddBankModal({
 
       const newBank = await addBank(bankName);
       onBankAdded(newBank.id);
+      await onSuccess?.();
       setBankName("");
       onClose();
     } catch (error) {

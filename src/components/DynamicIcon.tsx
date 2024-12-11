@@ -19,7 +19,10 @@ export function DynamicIcon({
   if (!svgPath) {
     return (
       <View style={{ width: size, height: size }}>
-        <CircleDollarSign size={size} color={color} />
+        <CircleDollarSign
+          size={size}
+          color={fallbackType === "income" ? "#4CAF50" : "#F44336"}
+        />
       </View>
     );
   }
