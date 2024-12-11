@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, ScrollView } from "react-native";
-import { BaseModal } from "./BaseModal";
+import { ElevatedBaseModal } from "./ElevatedBaseModal";
 import { DynamicIcon } from "./DynamicIcon";
 import { Transaction } from "../types/transaction.types";
 
@@ -17,7 +17,14 @@ export function TransactionDetails({
   date,
   transactions,
 }: TransactionDetailsProps) {
-  // Calcular el total de ingresos y gastos
+  // Función para formatear números al estilo chileno
+  const formatNumber = (number: number) => {
+    return number.toLocaleString("es-CL", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
+  };
+
   const totals = transactions.reduce(
     (acc, transaction) => {
       if (transaction.type === "income") {
@@ -31,24 +38,24 @@ export function TransactionDetails({
   );
 
   return (
-    <BaseModal
+    <ElevatedBaseModal
       visible={visible}
       onClose={onClose}
-      title={`Transacciones del ${date}`}
+      title="Transacciones"
     >
       <View className="space-y-4">
         {/* Totales */}
         <View className="flex-row justify-between">
           <View>
-            <Text className="text-textSecondary">Ingresos</Text>
+            <Text className="text-textSecondary font-medium">Ingresos</Text>
             <Text className="text-textPrimary text-lg font-bold">
-              ${totals.income.toFixed(2)}
+              ${formatNumber(totals.income)}
             </Text>
           </View>
           <View>
-            <Text className="text-textSecondary">Gastos</Text>
+            <Text className="text-textSecondary font-medium">Gastos</Text>
             <Text className="text-textPrimary text-lg font-bold">
-              ${totals.expenses.toFixed(2)}
+              ${formatNumber(totals.expenses)}
             </Text>
           </View>
         </View>
@@ -80,12 +87,12 @@ export function TransactionDetails({
                 }`}
               >
                 {transaction.type === "income" ? "+" : "-"}$
-                {transaction.amount.toFixed(2)}
+                {formatNumber(transaction.amount)}
               </Text>
             </View>
           ))}
         </ScrollView>
       </View>
-    </BaseModal>
+    </ElevatedBaseModal>
   );
 }
