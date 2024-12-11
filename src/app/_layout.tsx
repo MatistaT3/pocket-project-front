@@ -34,9 +34,7 @@ function RootLayout() {
           </View>
         </View>
       </SafeAreaView>
-      <SafeAreaView edges={["bottom"]} className="bg-transparent">
-        <Navbar />
-      </SafeAreaView>
+      <Navbar />
     </View>
   );
 }

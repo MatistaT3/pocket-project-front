@@ -6,51 +6,78 @@ import { BankAccountsModal } from "./BankAccountsModal";
 import { useTransactions } from "../hooks/useTransactions";
 
 export function Navbar() {
-  const [addModalVisible, setAddModalVisible] = useState(false);
+  const [addTransactionModalVisible, setAddTransactionModalVisible] =
+    useState(false);
   const [bankAccountsModalVisible, setBankAccountsModalVisible] =
     useState(false);
   const { refreshTransactions } = useTransactions();
 
   return (
     <>
-      <View className="mt-auto">
-        <View className="bg-teal rounded-t-[40px]">
-          <View className="h-24 flex-row items-center justify-between px-6">
+      <View className="mt-auto w-full">
+        <View className="h-4 bg-background" />
+        <View
+          className="w-full bg-white shadow-lg border border-veryPaleBlue/10"
+          style={{
+            elevation: 8,
+            shadowColor: "#755bce",
+            shadowOffset: {
+              width: 0,
+              height: -4,
+            },
+            shadowOpacity: 0.15,
+            shadowRadius: 12,
+          }}
+        >
+          <View className="h-[56px] flex-row items-center justify-between px-8 ">
             <View className="items-center">
-              <Pressable className="p-3">
-                <Home size={32} color="white" />
+              <Pressable
+                className="w-[48px] h-[48px] items-center justify-center"
+                hitSlop={8}
+              >
+                <Home size={24} color="#755bce" />
+                <Text className="text-textPrimary text-xs mt-1">Home</Text>
               </Pressable>
-              <Text className="text-white text-sm">Home</Text>
             </View>
 
             <View className="items-center">
               <Pressable
-                className="p-3"
+                className="w-[48px] h-[48px] items-center justify-center"
+                hitSlop={8}
                 onPress={() => setBankAccountsModalVisible(true)}
               >
-                <CreditCard size={32} color="white" />
+                <CreditCard size={24} color="#755bce" />
+                <Text className="text-textPrimary text-xs mt-1">Cuentas</Text>
               </Pressable>
-              <Text className="text-white text-sm">Cuentas</Text>
             </View>
           </View>
 
+          {/* Botón flotante */}
           <Pressable
-            className="absolute left-1/2 -top-10 bg-orange w-20 h-20 rounded-full items-center justify-center shadow-xl border-4 border-oxfordBlue"
-            style={{ transform: [{ translateX: -40 }] }}
-            onPress={() => setAddModalVisible(true)}
+            className="absolute left-1/2 -top-8 bg-moderateBlue w-16 h-16 rounded-full items-center justify-center shadow-xl border border-white"
+            style={{
+              transform: [{ translateX: -32 }],
+              elevation: 12,
+              shadowColor: "#755bce",
+              shadowOffset: {
+                width: 0,
+                height: 6,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 8,
+            }}
+            onPress={() => setAddTransactionModalVisible(true)}
           >
-            <Plus size={36} color="white" />
+            <Plus size={32} color="white" />
           </Pressable>
 
-          <View className="h-6 bg-teal" />
+          <View className="h-8 bg-white" />
         </View>
-
-        <View className="h-20 bg-teal -mt-1" style={{ marginBottom: -50 }} />
       </View>
 
       <AddTransactionModal
-        visible={addModalVisible}
-        onClose={() => setAddModalVisible(false)}
+        visible={addTransactionModalVisible}
+        onClose={() => setAddTransactionModalVisible(false)}
         onSuccess={refreshTransactions}
       />
 
