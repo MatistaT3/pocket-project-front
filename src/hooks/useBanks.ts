@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
+import { useAuth } from "../context/AuthContext";
 
 interface BankCard {
   id: string;
@@ -23,12 +24,14 @@ interface Bank {
 export function useBanks() {
   const [banks, setBanks] = useState<Bank[]>([]);
   const [loading, setLoading] = useState(true);
+  const { session } = useAuth();
 
   const fetchBanks = async () => {
     try {
-      const { data: banksData, error: banksError } = await supabase.from(
-        "user_banks"
-      ).select(`
+      const { data: banksData, error: banksError } = await supabase
+        .from("user_banks")
+        .select(
+          `
           id,
           bank_name,
           bank_accounts (
@@ -41,7 +44,9 @@ export function useBanks() {
               card_type
             )
           )
-        `);
+        `
+        )
+        .eq("user_id", session?.user.id);
 
       if (banksError) throw banksError;
 
@@ -71,14 +76,23 @@ export function useBanks() {
   };
 
   useEffect(() => {
-    fetchBanks();
-  }, []);
+    if (session?.user.id) {
+      fetchBanks();
+    }
+  }, [session?.user.id]);
 
   const addBank = async (bankName: string) => {
+    if (!session?.user.id) {
+      throw new Error("User must be logged in to add a bank");
+    }
+
     try {
       const { data, error } = await supabase
         .from("user_banks")
-        .insert({ bank_name: bankName })
+        .insert({
+          bank_name: bankName,
+          user_id: session.user.id,
+        })
         .select()
         .single();
 
