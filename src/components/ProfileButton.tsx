@@ -98,137 +98,139 @@ export function ProfileButton() {
           setEditingField(null);
         }}
       >
-        <View className="shadow-lg">
-          <Pressable
-            className="flex-1 bg-background/50"
-            onPress={() => {
-              setIsModalVisible(false);
-              setEditingField(null);
-            }}
-          >
-            <View
-              className="absolute top-16 right-4 bg-white rounded-3xl p-6 w-80 border border-veryPaleBlue/10 shadow-inner"
-              style={{
-                elevation: 8,
-                shadowColor: "#755bce",
-                shadowOffset: {
-                  width: 0,
-                  height: 4,
-                },
-                shadowOpacity: 0.15,
-                shadowRadius: 8,
+        <View className="flex-1 bg-white/50">
+          <View className="shadow-lg">
+            <Pressable
+              className="flex-1"
+              onPress={() => {
+                setIsModalVisible(false);
+                setEditingField(null);
               }}
             >
-              <View className="flex-row justify-between items-center mb-6">
-                <Text className="text-xl font-bold text-textPrimary">
-                  Mi Perfil
-                </Text>
-                <Pressable
-                  onPress={() => {
-                    setIsModalVisible(false);
-                    setEditingField(null);
-                  }}
-                  className="w-8 h-8 items-center justify-center rounded-full bg-veryPaleBlue/5"
-                >
-                  <X size={24} color="#755bce" />
-                </Pressable>
-              </View>
-
-              <View className="space-y-4">
-                <View>
-                  <TextInput
-                    className={`bg-veryPaleBlue/50 text-textPrimary p-4 rounded-xl mb-2 ${
-                      editingField === "name"
-                        ? "border-2 border-moderateBlue"
-                        : ""
-                    }`}
-                    placeholder="Nombre completo"
-                    placeholderTextColor="#755bce"
-                    value={
-                      editingField === "name"
-                        ? editValue
-                        : userData?.user_metadata?.full_name
-                    }
-                    onChangeText={
-                      editingField === "name" ? setEditValue : undefined
-                    }
-                    editable={editingField === "name"}
-                  />
-                  <View className="absolute right-4 top-4 flex-row space-x-2">
-                    {editingField === "name" ? (
-                      <>
-                        <Pressable onPress={() => handleCancel("name")}>
-                          <X size={20} color="#755bce" />
-                        </Pressable>
-                        <Pressable onPress={handleSave}>
-                          <Check size={20} color="#755bce" />
-                        </Pressable>
-                      </>
-                    ) : (
-                      <Pressable onPress={() => handleEdit("name")}>
-                        <PencilLine size={20} color="#755bce" />
-                      </Pressable>
-                    )}
-                  </View>
-                </View>
-
-                <View>
-                  <TextInput
-                    className={`bg-veryPaleBlue/50 text-textPrimary p-4 rounded-xl mb-2 ${
-                      editingField === "phone"
-                        ? "border-2 border-moderateBlue"
-                        : ""
-                    }`}
-                    placeholder="Teléfono"
-                    placeholderTextColor="#755bce"
-                    value={
-                      editingField === "phone" ? editValue : userData?.phone
-                    }
-                    onChangeText={
-                      editingField === "phone" ? setEditValue : undefined
-                    }
-                    editable={editingField === "phone"}
-                    keyboardType="phone-pad"
-                  />
-                  <View className="absolute right-4 top-4 flex-row space-x-2">
-                    {editingField === "phone" ? (
-                      <>
-                        <Pressable onPress={() => handleCancel("phone")}>
-                          <X size={20} color="#755bce" />
-                        </Pressable>
-                        <Pressable onPress={handleSave}>
-                          <Check size={20} color="#755bce" />
-                        </Pressable>
-                      </>
-                    ) : (
-                      <Pressable onPress={() => handleEdit("phone")}>
-                        <PencilLine size={20} color="#755bce" />
-                      </Pressable>
-                    )}
-                  </View>
-                </View>
-
-                <TextInput
-                  className="bg-veryPaleBlue/50 text-textPrimary p-4 rounded-xl"
-                  placeholder="Email"
-                  placeholderTextColor="#755bce"
-                  value={userData?.email}
-                  editable={false}
-                />
-
-                <View className="mt-2">
+              <View
+                className="absolute top-16 right-4 bg-white rounded-3xl p-6 w-80 border border-veryPaleBlue/10 shadow-inner"
+                style={{
+                  elevation: 8,
+                  shadowColor: "#755bce",
+                  shadowOffset: {
+                    width: 0,
+                    height: 4,
+                  },
+                  shadowOpacity: 0.15,
+                  shadowRadius: 8,
+                }}
+              >
+                <View className="flex-row justify-between items-center mb-6">
+                  <Text className="text-xl font-bold text-textPrimary">
+                    Mi Perfil
+                  </Text>
                   <Pressable
-                    className="bg-moderateBlue p-4 rounded-xl"
-                    onPress={signOut}
+                    onPress={() => {
+                      setIsModalVisible(false);
+                      setEditingField(null);
+                    }}
+                    className="w-8 h-8 items-center justify-center rounded-full bg-veryPaleBlue/5"
                   >
-                    <Text className="text-white text-center font-semibold">
-                      Cerrar Sesión
-                    </Text>
+                    <X size={24} color="#755bce" />
                   </Pressable>
                 </View>
+
+                <View className="space-y-4">
+                  <View>
+                    <TextInput
+                      className={`bg-veryPaleBlue/50 text-textPrimary p-4 rounded-xl mb-2 ${
+                        editingField === "name"
+                          ? "border-2 border-moderateBlue"
+                          : ""
+                      }`}
+                      placeholder="Nombre completo"
+                      placeholderTextColor="#755bce"
+                      value={
+                        editingField === "name"
+                          ? editValue
+                          : userData?.user_metadata?.full_name
+                      }
+                      onChangeText={
+                        editingField === "name" ? setEditValue : undefined
+                      }
+                      editable={editingField === "name"}
+                    />
+                    <View className="absolute right-4 top-4 flex-row space-x-2">
+                      {editingField === "name" ? (
+                        <>
+                          <Pressable onPress={() => handleCancel("name")}>
+                            <X size={20} color="#755bce" />
+                          </Pressable>
+                          <Pressable onPress={handleSave}>
+                            <Check size={20} color="#755bce" />
+                          </Pressable>
+                        </>
+                      ) : (
+                        <Pressable onPress={() => handleEdit("name")}>
+                          <PencilLine size={20} color="#755bce" />
+                        </Pressable>
+                      )}
+                    </View>
+                  </View>
+
+                  <View>
+                    <TextInput
+                      className={`bg-veryPaleBlue/50 text-textPrimary p-4 rounded-xl mb-2 ${
+                        editingField === "phone"
+                          ? "border-2 border-moderateBlue"
+                          : ""
+                      }`}
+                      placeholder="Teléfono"
+                      placeholderTextColor="#755bce"
+                      value={
+                        editingField === "phone" ? editValue : userData?.phone
+                      }
+                      onChangeText={
+                        editingField === "phone" ? setEditValue : undefined
+                      }
+                      editable={editingField === "phone"}
+                      keyboardType="phone-pad"
+                    />
+                    <View className="absolute right-4 top-4 flex-row space-x-2">
+                      {editingField === "phone" ? (
+                        <>
+                          <Pressable onPress={() => handleCancel("phone")}>
+                            <X size={20} color="#755bce" />
+                          </Pressable>
+                          <Pressable onPress={handleSave}>
+                            <Check size={20} color="#755bce" />
+                          </Pressable>
+                        </>
+                      ) : (
+                        <Pressable onPress={() => handleEdit("phone")}>
+                          <PencilLine size={20} color="#755bce" />
+                        </Pressable>
+                      )}
+                    </View>
+                  </View>
+
+                  <TextInput
+                    className="bg-veryPaleBlue/50 text-textPrimary p-4 rounded-xl"
+                    placeholder="Email"
+                    placeholderTextColor="#755bce"
+                    value={userData?.email}
+                    editable={false}
+                  />
+
+                  <View className="mt-2">
+                    <Pressable
+                      className="bg-moderateBlue p-4 rounded-xl"
+                      onPress={signOut}
+                    >
+                      <Text className="text-white text-center font-semibold">
+                        Cerrar Sesión
+                      </Text>
+                    </Pressable>
+                  </View>
+                </View>
               </View>
-            </View>
-          </Pressable>
+            </Pressable>
+          </View>
         </View>
       </Modal>
     </>
