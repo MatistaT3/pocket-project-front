@@ -1,71 +1,106 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, Pressable, Modal, TextInput, Alert } from "react-native";
-import { User, X, Phone, Mail, PencilLine, Check } from "lucide-react-native";
+import { View, Pressable, TextInput, Text } from "react-native";
+import { User, PencilLine, Check, X } from "lucide-react-native";
+import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "../lib/supabase";
+import { ElevatedBaseModal } from "./ElevatedBaseModal";
+import { CountryPicker } from "react-native-country-codes-picker";
 
 export function ProfileButton() {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { signOut, session } = useAuth();
   const [editingField, setEditingField] = useState<"name" | "phone" | null>(
     null
   );
   const [editValue, setEditValue] = useState("");
-  const [userData, setUserData] = useState<any>(null);
+  const [showCountryPicker, setShowCountryPicker] = useState(false);
+  const [countryCode, setCountryCode] = useState("+56");
+  const { signOut, session } = useAuth();
+  const [profileData, setProfileData] = useState<any>(null);
 
   useEffect(() => {
-    if (isModalVisible) {
-      refreshUserData();
+    if (isModalVisible && session?.user) {
+      fetchProfileData();
     }
-  }, [isModalVisible]);
+  }, [isModalVisible, session?.user]);
 
-  const refreshUserData = async () => {
+  const fetchProfileData = async () => {
+    if (!session?.user) return;
+
     try {
-      const {
-        data: { user },
-        error,
-      } = await supabase.auth.getUser();
-      if (error) throw error;
-      setUserData(user);
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", session.user.id)
+        .single();
+
+      if (error) {
+        console.error("Error fetching profile data:", error);
+        return;
+      }
+
+      // Extraer el código de país del número de teléfono si existe
+      if (data?.phone_number && data.phone_number.startsWith("+")) {
+        // Buscar el código de país en el número (asumiendo que siempre empieza con +)
+        const matches = data.phone_number.match(/^\+\d{2}/);
+        if (matches) {
+          setCountryCode(matches[0]);
+        }
+      }
+
+      setProfileData(data);
     } catch (error) {
-      console.error("Error fetching user data:", error);
+      console.error("Error in fetchProfileData:", error);
     }
   };
 
   const handleEdit = (field: "name" | "phone") => {
-    const currentValue =
-      field === "name" ? userData?.user_metadata?.full_name : userData?.phone;
-    setEditValue(currentValue || "");
+    if (field === "name") {
+      setEditValue(profileData?.full_name || "");
+    } else {
+      // Para teléfono, remover el código de país
+      const phoneNumber = profileData?.phone_number || "";
+      const numberWithoutCode = phoneNumber.replace(countryCode, "");
+      setEditValue(numberWithoutCode);
+    }
     setEditingField(field);
   };
 
-  const handleSave = async () => {
-    if (!editingField || !session?.user) return;
-
-    try {
-      let updateData = {};
-      if (editingField === "name") {
-        updateData = { data: { full_name: editValue } };
-      } else {
-        updateData = { phone: editValue };
-      }
-
-      const { error } = await supabase.auth.updateUser(updateData);
-
-      if (error) throw error;
-
-      refreshUserData();
-      Alert.alert("Éxito", "Información actualizada correctamente");
-      setEditingField(null);
-    } catch (error: any) {
-      console.error("Error updating user:", error);
-      Alert.alert("Error", error.message);
-    }
-  };
-
-  const handleCancel = (field: "name" | "phone") => {
+  const handleCancel = () => {
     setEditingField(null);
     setEditValue("");
+  };
+
+  const handleSave = async () => {
+    if (!editingField || !session?.user?.id) return;
+
+    try {
+      const updates = {
+        id: session.user.id,
+        [editingField === "name" ? "full_name" : "phone_number"]:
+          editingField === "phone" ? `${countryCode}${editValue}` : editValue,
+        updated_at: new Date().toISOString(),
+      };
+
+      const { error } = await supabase
+        .from("profiles")
+        .update(updates)
+        .eq("id", session.user.id);
+
+      if (error) {
+        console.error("Error updating profile:", error);
+        return;
+      }
+
+      setProfileData((prev) => ({
+        ...prev,
+        [editingField === "name" ? "full_name" : "phone_number"]:
+          editingField === "phone" ? `${countryCode}${editValue}` : editValue,
+      }));
+      setEditingField(null);
+      setEditValue("");
+    } catch (error) {
+      console.error("Error in handleSave:", error);
+    }
   };
 
   return (
@@ -89,150 +124,171 @@ export function ProfileButton() {
         </Pressable>
       </View>
 
-      <Modal
+      <ElevatedBaseModal
         visible={isModalVisible}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => {
+        onClose={() => {
           setIsModalVisible(false);
           setEditingField(null);
         }}
+        title="Mi Perfil"
       >
-        <View className="flex-1 bg-white/50">
-          <View className="shadow-lg">
-            <Pressable
-              className="flex-1"
-              onPress={() => {
-                setIsModalVisible(false);
-                setEditingField(null);
-              }}
-            >
-              <View
-                className="absolute top-16 right-4 bg-white rounded-3xl p-6 w-80 border border-veryPaleBlue/10 shadow-inner"
-                style={{
-                  elevation: 8,
-                  shadowColor: "#755bce",
-                  shadowOffset: {
-                    width: 0,
-                    height: 4,
-                  },
-                  shadowOpacity: 0.15,
-                  shadowRadius: 8,
-                }}
-              >
-                <View className="flex-row justify-between items-center mb-6">
-                  <Text className="text-xl font-bold text-textPrimary">
-                    Mi Perfil
-                  </Text>
+        <View className="space-y-4">
+          <View>
+            <TextInput
+              className={`bg-veryPaleBlue/50 text-textPrimary p-4 rounded-xl mb-2 ${
+                editingField === "name" ? "border-2 border-moderateBlue" : ""
+              }`}
+              placeholder="Ingrese su nombre"
+              placeholderTextColor="#755bce"
+              value={
+                editingField === "name" ? editValue : profileData?.full_name
+              }
+              onChangeText={editingField === "name" ? setEditValue : undefined}
+              editable={editingField === "name"}
+            />
+            <View className="absolute right-4 top-4 flex-row space-x-2">
+              {editingField === "name" ? (
+                <>
                   <Pressable
-                    onPress={() => {
-                      setIsModalVisible(false);
-                      setEditingField(null);
-                    }}
-                    className="w-8 h-8 items-center justify-center rounded-full bg-veryPaleBlue/5"
+                    className="w-8 h-8 items-center justify-center rounded-full bg-veryPaleBlue/10"
+                    onPress={handleCancel}
                   >
-                    <X size={24} color="#755bce" />
+                    <X size={20} color="#755bce" />
                   </Pressable>
-                </View>
+                  <Pressable
+                    className="w-8 h-8 items-center justify-center rounded-full bg-veryPaleBlue/10"
+                    onPress={handleSave}
+                  >
+                    <Check size={20} color="#755bce" />
+                  </Pressable>
+                </>
+              ) : (
+                <Pressable
+                  className="w-8 h-8 items-center justify-center rounded-full bg-veryPaleBlue/10"
+                  onPress={() => handleEdit("name")}
+                >
+                  <PencilLine size={20} color="#755bce" />
+                </Pressable>
+              )}
+            </View>
+          </View>
 
-                <View className="space-y-4">
-                  <View>
-                    <TextInput
-                      className={`bg-veryPaleBlue/50 text-textPrimary p-4 rounded-xl mb-2 ${
-                        editingField === "name"
-                          ? "border-2 border-moderateBlue"
-                          : ""
-                      }`}
-                      placeholder="Nombre completo"
-                      placeholderTextColor="#755bce"
-                      value={
-                        editingField === "name"
-                          ? editValue
-                          : userData?.user_metadata?.full_name
-                      }
-                      onChangeText={
-                        editingField === "name" ? setEditValue : undefined
-                      }
-                      editable={editingField === "name"}
-                    />
-                    <View className="absolute right-4 top-4 flex-row space-x-2">
-                      {editingField === "name" ? (
-                        <>
-                          <Pressable onPress={() => handleCancel("name")}>
-                            <X size={20} color="#755bce" />
-                          </Pressable>
-                          <Pressable onPress={handleSave}>
-                            <Check size={20} color="#755bce" />
-                          </Pressable>
-                        </>
-                      ) : (
-                        <Pressable onPress={() => handleEdit("name")}>
-                          <PencilLine size={20} color="#755bce" />
-                        </Pressable>
-                      )}
-                    </View>
-                  </View>
-
-                  <View>
-                    <TextInput
-                      className={`bg-veryPaleBlue/50 text-textPrimary p-4 rounded-xl mb-2 ${
-                        editingField === "phone"
-                          ? "border-2 border-moderateBlue"
-                          : ""
-                      }`}
-                      placeholder="Teléfono"
-                      placeholderTextColor="#755bce"
-                      value={
-                        editingField === "phone" ? editValue : userData?.phone
-                      }
-                      onChangeText={
-                        editingField === "phone" ? setEditValue : undefined
-                      }
-                      editable={editingField === "phone"}
-                      keyboardType="phone-pad"
-                    />
-                    <View className="absolute right-4 top-4 flex-row space-x-2">
-                      {editingField === "phone" ? (
-                        <>
-                          <Pressable onPress={() => handleCancel("phone")}>
-                            <X size={20} color="#755bce" />
-                          </Pressable>
-                          <Pressable onPress={handleSave}>
-                            <Check size={20} color="#755bce" />
-                          </Pressable>
-                        </>
-                      ) : (
-                        <Pressable onPress={() => handleEdit("phone")}>
-                          <PencilLine size={20} color="#755bce" />
-                        </Pressable>
-                      )}
-                    </View>
-                  </View>
-
-                  <TextInput
-                    className="bg-veryPaleBlue/50 text-textPrimary p-4 rounded-xl"
-                    placeholder="Email"
-                    placeholderTextColor="#755bce"
-                    value={userData?.email}
-                    editable={false}
-                  />
-
-                  <View className="mt-2">
+          <View>
+            <View className="flex-row space-x-2">
+              <Pressable
+                className="bg-veryPaleBlue/50 rounded-xl px-4 justify-center items-center mb-2"
+                onPress={() =>
+                  editingField === "phone" && setShowCountryPicker(true)
+                }
+                disabled={editingField !== "phone"}
+              >
+                <Text
+                  className={`text-textPrimary ${
+                    editingField !== "phone" ? "opacity-50" : ""
+                  }`}
+                >
+                  {countryCode}
+                </Text>
+              </Pressable>
+              <View className="flex-1">
+                <TextInput
+                  className={`bg-veryPaleBlue/50 text-textPrimary p-4 rounded-xl mb-2 ${
+                    editingField === "phone"
+                      ? "border-2 border-moderateBlue"
+                      : ""
+                  }`}
+                  placeholder="Teléfono"
+                  placeholderTextColor="#755bce"
+                  value={
+                    editingField === "phone"
+                      ? editValue
+                      : profileData?.phone_number
+                          ?.replace(countryCode, "")
+                          .trim()
+                  }
+                  onChangeText={
+                    editingField === "phone" ? setEditValue : undefined
+                  }
+                  editable={editingField === "phone"}
+                  keyboardType="phone-pad"
+                />
+                <View className="absolute right-4 top-4 flex-row space-x-2">
+                  {editingField === "phone" ? (
+                    <>
+                      <Pressable
+                        className="w-8 h-8 items-center justify-center rounded-full bg-veryPaleBlue/10"
+                        onPress={handleCancel}
+                      >
+                        <X size={20} color="#755bce" />
+                      </Pressable>
+                      <Pressable
+                        className="w-8 h-8 items-center justify-center rounded-full bg-veryPaleBlue/10"
+                        onPress={handleSave}
+                      >
+                        <Check size={20} color="#755bce" />
+                      </Pressable>
+                    </>
+                  ) : (
                     <Pressable
-                      className="bg-moderateBlue p-4 rounded-xl"
-                      onPress={signOut}
+                      className="w-8 h-8 items-center justify-center rounded-full bg-veryPaleBlue/10"
+                      onPress={() => handleEdit("phone")}
                     >
-                      <Text className="text-white text-center font-semibold">
-                        Cerrar Sesión
-                      </Text>
+                      <PencilLine size={20} color="#755bce" />
                     </Pressable>
-                  </View>
+                  )}
                 </View>
               </View>
+            </View>
+          </View>
+
+          <TextInput
+            className="bg-veryPaleBlue/50 text-textPrimary p-4 rounded-xl"
+            placeholder="Email"
+            placeholderTextColor="#755bce"
+            value={session?.user?.email}
+            editable={false}
+          />
+
+          <View className="mt-2">
+            <Pressable
+              className="bg-moderateBlue p-4 rounded-xl"
+              onPress={signOut}
+            >
+              <Text className="text-white text-center font-semibold">
+                Cerrar Sesión
+              </Text>
             </Pressable>
           </View>
         </View>
-      </Modal>
+      </ElevatedBaseModal>
+
+      <CountryPicker
+        show={showCountryPicker}
+        pickerButtonOnPress={(item) => {
+          setCountryCode(item.dial_code);
+          setShowCountryPicker(false);
+        }}
+        onBackdropPress={() => setShowCountryPicker(false)}
+        style={{
+          modal: {
+            height: 500,
+            backgroundColor: "white",
+          },
+          textInput: {
+            color: "#755bce",
+            height: 48,
+          },
+          countryButtonStyles: {
+            height: 48,
+          },
+          flag: {
+            fontSize: 24,
+          },
+        }}
+        inputPlaceholder="Buscar país"
+        lang="es"
+        enableModalAvoiding={false}
+      />
     </>
   );
 }
