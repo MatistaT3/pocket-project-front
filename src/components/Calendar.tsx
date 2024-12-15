@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import { View, Pressable, Text } from "react-native";
 import { ChevronLeft, ChevronRight } from "lucide-react-native";
 import {
-  addMonths,
-  subMonths,
   startOfMonth,
   endOfMonth,
   eachDayOfInterval,

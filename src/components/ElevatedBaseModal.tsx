@@ -43,7 +43,7 @@ export function ElevatedBaseModal({
                   : "mx-4 rounded-3xl"
               }`}
               style={{
-                maxHeight: variant === "bottom-sheet" ? "90%" : undefined,
+                maxHeight: variant === "bottom-sheet" ? "70%" : undefined,
                 elevation: 8,
                 shadowColor: "#755bce",
                 shadowOffset: {

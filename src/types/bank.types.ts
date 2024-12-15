@@ -1,3 +1,5 @@
+import { ImageSourcePropType } from "react-native";
+
 export interface BankCard {
   id: string;
   lastFourDigits: string;
@@ -44,4 +46,13 @@ export interface AccountFormData {
 export interface CardFormData {
   lastFourDigits: string;
   type: "credit" | "debit";
+}
+
+export interface BankApp {
+  appName: string;
+  scheme?: string;
+  androidPackage?: string;
+  iosId?: string;
+  icon?: any;
+  hasApp: boolean;
 }

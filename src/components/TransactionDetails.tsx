@@ -2,14 +2,7 @@ import React from "react";
 import { View, Text, ScrollView } from "react-native";
 import { ElevatedBaseModal } from "./ElevatedBaseModal";
 import { DynamicIcon } from "./DynamicIcon";
-import { Transaction } from "../types/transaction.types";
-
-interface TransactionDetailsProps {
-  visible: boolean;
-  onClose: () => void;
-  date: string;
-  transactions: Transaction[];
-}
+import { TransactionDetailsProps } from "../types/transaction.types";
 
 export function TransactionDetails({
   visible,

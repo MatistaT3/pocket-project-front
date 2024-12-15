@@ -17,6 +17,7 @@ import {
   CardFormData,
 } from "../types/bank.types";
 import { ModalView } from "../types/common.types";
+import { AVAILABLE_BANKS } from "../constants/banks";
 
 export function BankAccountsModal({
   visible,
@@ -46,39 +47,6 @@ export function BankAccountsModal({
     lastFourDigits: "",
     type: "debit",
   });
-
-  // Lista estandarizada de bancos
-  const AVAILABLE_BANKS = [
-    "Banco BCI",
-    "Mach",
-    "Banco BBVA",
-    "Banco Bice",
-    "Banco CORP Banca",
-    "Banco Consorcio",
-    "Banco Estado",
-    "Banco Falabella",
-    "Banco ITAU",
-    "Banco Internacional",
-    "Banco Paris",
-    "Banco Ripley",
-    "Banco Santander",
-    "Banco Scotiabank",
-    "Banco Security",
-    "Banco de Chile",
-    "Banco Edwards",
-    "Banco del Desarrollo",
-    "Coopeuch",
-    "Dale",
-    "Copec Pay",
-    "Global66",
-    "HSBC Bank",
-    "La Polar Prepago",
-    "Mercado Pago",
-    "Prepago Los Heroes",
-    "Prex",
-    "TAPP Caja los Andes",
-    "Tenpo",
-  ].sort();
 
   const handleAddBank = async (bankName: string) => {
     try {
@@ -259,7 +227,7 @@ export function BankAccountsModal({
   };
 
   const renderAddBankForm = () => (
-    <ScrollView className="space-y-2">
+    <ScrollView className="space-y-2 pb-16">
       {AVAILABLE_BANKS.map((bankName) => (
         <Pressable
           key={bankName}
