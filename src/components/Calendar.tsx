@@ -139,7 +139,7 @@ export function Calendar() {
             height: 4,
           },
           shadowOpacity: 0.15,
-          shadowRadius: 12,
+          shadowRadius: 8,
         }}
       >
         <GestureDetector gesture={swipeGesture}>

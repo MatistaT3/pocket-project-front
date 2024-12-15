@@ -108,7 +108,7 @@ export function ProfileButton() {
       <View className="shadow-lg">
         <Pressable
           onPress={() => setIsModalVisible(true)}
-          className="bg-white w-12 h-12 rounded-full items-center justify-center shadow-inner border border-veryPaleBlue/10"
+          className="bg-white w-12 h-12 rounded-full items-center justify-center shadow-inner"
           style={{
             elevation: 8,
             shadowColor: "#755bce",
