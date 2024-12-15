@@ -10,9 +10,6 @@ import {
 import { Building2, CreditCard, Plus, Trash2 } from "lucide-react-native";
 import { useBanks } from "../hooks/useBanks";
 import { ElevatedBaseModal } from "./ElevatedBaseModal";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Swipeable } from "react-native-gesture-handler";
-
 interface BankAccountsModalProps {
   visible: boolean;
   onClose: () => void;
@@ -260,27 +257,19 @@ export function BankAccountsModal({
     );
   };
 
-  const renderDeleteAction = (bankId: string, bankName: string) => {
-    return (
-      <Pressable
-        className="bg-red-500 w-20 h-full justify-center items-center"
-        onPress={() => handleDeleteBank(bankId, bankName)}
-      >
-        <Trash2 size={24} color="white" />
-      </Pressable>
-    );
-  };
-
   const renderAddBankForm = () => (
-    <ScrollView className="space-y-4">
+    <ScrollView className="space-y-2">
       {AVAILABLE_BANKS.map((bankName) => (
         <Pressable
           key={bankName}
-          className="bg-veryPaleBlue/10 p-4 rounded-xl flex-row items-center"
+          className="bg-veryPaleBlue/10 p-4 rounded-xl flex-row items-center justify-between"
           onPress={() => handleAddBank(bankName)}
         >
-          <Building2 size={24} color="#755bce" />
-          <Text className="text-textPrimary ml-3">{bankName}</Text>
+          <View className="flex-row items-center flex-1">
+            <Building2 size={24} color="#755bce" />
+            <Text className="text-textPrimary ml-3 flex-1">{bankName}</Text>
+          </View>
+          <Plus size={20} color="#755bce" />
         </Pressable>
       ))}
     </ScrollView>
@@ -289,7 +278,9 @@ export function BankAccountsModal({
   const renderAddAccountForm = () => (
     <View className="space-y-4">
       <View>
-        <Text className="text-textSecondary mb-2">Número de cuenta</Text>
+        <Text className="text-textSecondary mb-2 font-medium">
+          Número de cuenta
+        </Text>
         <TextInput
           className="bg-veryPaleBlue/10 text-textPrimary p-4 rounded-xl"
           value={accountForm.accountNumber}
@@ -303,14 +294,16 @@ export function BankAccountsModal({
       </View>
 
       <View>
-        <Text className="text-textSecondary mb-2">Saldo inicial</Text>
+        <Text className="text-textSecondary mb-2 font-medium">
+          Saldo inicial
+        </Text>
         <TextInput
           className="bg-veryPaleBlue/10 text-textPrimary p-4 rounded-xl"
           value={accountForm.initialBalance}
           onChangeText={(text) =>
             setAccountForm({ ...accountForm, initialBalance: text })
           }
-          placeholder="0.00"
+          placeholder="0"
           placeholderTextColor="#755bce/75"
           keyboardType="decimal-pad"
         />
@@ -330,7 +323,9 @@ export function BankAccountsModal({
   const renderAddCardForm = () => (
     <View className="space-y-4">
       <View>
-        <Text className="text-textSecondary mb-2">Últimos 4 dígitos</Text>
+        <Text className="text-textSecondary mb-2 font-medium">
+          Últimos 4 dígitos
+        </Text>
         <TextInput
           className="bg-veryPaleBlue/10 text-textPrimary p-4 rounded-xl"
           value={cardForm.lastFourDigits}
@@ -345,27 +340,41 @@ export function BankAccountsModal({
       </View>
 
       <View>
-        <Text className="text-textSecondary mb-2">Tipo de tarjeta</Text>
+        <Text className="text-textSecondary mb-2 font-medium">
+          Tipo de tarjeta
+        </Text>
         <View className="flex-row space-x-2">
           <Pressable
             className={`flex-1 p-4 rounded-xl ${
               cardForm.type === "debit"
-                ? "bg-veryPaleBlue"
+                ? "bg-moderateBlue"
                 : "bg-veryPaleBlue/20"
             }`}
             onPress={() => setCardForm({ ...cardForm, type: "debit" })}
           >
-            <Text className="text-textPrimary text-center">Débito</Text>
+            <Text
+              className={`text-center font-medium ${
+                cardForm.type === "debit" ? "text-white" : "text-textPrimary"
+              }`}
+            >
+              Débito
+            </Text>
           </Pressable>
           <Pressable
             className={`flex-1 p-4 rounded-xl ${
               cardForm.type === "credit"
-                ? "bg-veryPaleBlue"
+                ? "bg-moderateBlue"
                 : "bg-veryPaleBlue/20"
             }`}
             onPress={() => setCardForm({ ...cardForm, type: "credit" })}
           >
-            <Text className="text-textPrimary text-center">Crédito</Text>
+            <Text
+              className={`text-center font-medium ${
+                cardForm.type === "credit" ? "text-white" : "text-textPrimary"
+              }`}
+            >
+              Crédito
+            </Text>
           </Pressable>
         </View>
       </View>
@@ -386,7 +395,7 @@ export function BankAccountsModal({
       <View className="flex-1 space-y-4">
         {banks.length === 0 ? (
           <View className="items-center justify-center py-8 space-y-6">
-            <Building2 size={64} color="#755bce" />
+            <Building2 size={64} color="#755bce" className="opacity-50" />
             <View className="space-y-2">
               <Text className="text-textPrimary text-center text-xl font-medium">
                 No tienes bancos configurados
@@ -397,12 +406,12 @@ export function BankAccountsModal({
               </Text>
             </View>
             <Pressable
-              className="bg-moderateBlue p-4 rounded-xl w-full mt-4"
+              className="bg-moderateBlue p-4 rounded-xl w-full"
               onPress={() => setCurrentView("addBank")}
             >
-              <View className="flex-row items-center justify-center">
+              <View className="flex-row items-center justify-center space-x-2">
                 <Plus size={20} color="white" />
-                <Text className="text-white text-center font-semibold ml-2">
+                <Text className="text-white text-center font-semibold">
                   Agregar Primer Banco
                 </Text>
               </View>
@@ -412,11 +421,13 @@ export function BankAccountsModal({
           <View className="space-y-4">
             {/* Botón de agregar banco */}
             <Pressable
-              className="bg-veryPaleBlue/10 p-4 rounded-xl flex-row items-center justify-center"
+              className="bg-veryPaleBlue/10 p-4 rounded-xl flex-row items-center justify-center space-x-2"
               onPress={() => setCurrentView("addBank")}
             >
               <Plus size={20} color="#755bce" />
-              <Text className="text-textPrimary ml-2">Agregar Banco</Text>
+              <Text className="text-textSecondary font-medium">
+                Agregar Banco
+              </Text>
             </Pressable>
 
             {/* Lista de bancos */}
@@ -431,12 +442,12 @@ export function BankAccountsModal({
                   <View className="flex-row items-center justify-between">
                     <View className="flex-row items-center flex-1">
                       <Building2 size={24} color="#755bce" />
-                      <Text className="text-textPrimary ml-3 flex-1">
+                      <Text className="text-textPrimary ml-3 flex-1 font-medium">
                         {bank.name}
                       </Text>
                     </View>
-                    <View className="flex-row items-center">
-                      <Text className="text-textSecondary mr-4">
+                    <View className="flex-row items-center space-x-4">
+                      <Text className="text-textSecondary">
                         {bank.accounts.length} cuenta(s)
                       </Text>
                       <Pressable
@@ -453,11 +464,11 @@ export function BankAccountsModal({
                   <View className="pl-4 space-y-2">
                     {/* Botón de agregar cuenta */}
                     <Pressable
-                      className="bg-veryPaleBlue/10 p-4 rounded-xl flex-row items-center justify-center"
+                      className="bg-veryPaleBlue/10 p-4 rounded-xl flex-row items-center justify-center space-x-2"
                       onPress={() => setCurrentView("addAccount")}
                     >
                       <Plus size={20} color="#755bce" />
-                      <Text className="text-textPrimary ml-2">
+                      <Text className="text-textSecondary font-medium">
                         Agregar Cuenta
                       </Text>
                     </Pressable>
@@ -474,16 +485,17 @@ export function BankAccountsModal({
                           }
                         >
                           <View className="flex-row items-center justify-between">
-                            <View>
-                              <Text className="text-textPrimary">
-                                {account.accountNumber}
+                            <View className="flex-1">
+                              <Text className="text-textPrimary font-medium">
+                                Cuenta N° {account.accountNumber}
                               </Text>
-                              <Text className="text-textSecondary text-sm">
-                                Saldo: ${account.currentBalance.toFixed(2)}
+                              <Text className="text-textSecondary">
+                                Saldo: $
+                                {account.currentBalance.toLocaleString("es-CL")}
                               </Text>
                             </View>
-                            <View className="flex-row items-center">
-                              <Text className="text-textSecondary mr-4">
+                            <View className="flex-row items-center space-x-4">
+                              <Text className="text-textSecondary">
                                 {account.cards.length} tarjeta(s)
                               </Text>
                               <Pressable
@@ -502,14 +514,14 @@ export function BankAccountsModal({
                         </Pressable>
 
                         {selectedAccount === account.id && (
-                          <View className="pl-4 mt-2">
+                          <View className="pl-4 mt-2 space-y-2">
                             {/* Botón de agregar tarjeta */}
                             <Pressable
-                              className="bg-veryPaleBlue/10 p-4 rounded-xl flex-row items-center justify-center"
+                              className="bg-veryPaleBlue/10 p-4 rounded-xl flex-row items-center justify-center space-x-2"
                               onPress={() => setCurrentView("addCard")}
                             >
                               <Plus size={20} color="#755bce" />
-                              <Text className="text-textPrimary ml-2">
+                              <Text className="text-textSecondary font-medium">
                                 Agregar Tarjeta
                               </Text>
                             </Pressable>
@@ -518,16 +530,16 @@ export function BankAccountsModal({
                             {account.cards.map((card) => (
                               <View
                                 key={card.id}
-                                className="bg-veryPaleBlue/5 p-4 rounded-xl mt-2"
+                                className="bg-veryPaleBlue/5 p-4 rounded-xl"
                               >
                                 <View className="flex-row items-center justify-between">
-                                  <View className="flex-row items-center">
+                                  <View className="flex-row items-center flex-1">
                                     <CreditCard size={20} color="#755bce" />
                                     <View className="ml-3">
-                                      <Text className="text-textPrimary">
+                                      <Text className="text-textPrimary font-medium">
                                         •••• {card.lastFourDigits}
                                       </Text>
-                                      <Text className="text-textSecondary text-sm capitalize">
+                                      <Text className="text-textSecondary capitalize">
                                         {card.type}
                                       </Text>
                                     </View>
