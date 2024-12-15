@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Pressable, Text } from "react-native";
 import { Home, Plus, CreditCard } from "lucide-react-native";
 import { AddTransactionModal } from "./AddTransactionModal";
-import { BankAccountsModal } from "./BankAccountsModal";
+import { BankAccountsModal } from "./AddBankAccountsModal";
 import { useTransactions } from "../hooks/useTransactions";
 
 export function Navbar() {
