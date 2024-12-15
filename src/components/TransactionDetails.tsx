@@ -34,7 +34,7 @@ export function TransactionDetails({
     <ElevatedBaseModal
       visible={visible}
       onClose={onClose}
-      title="Transacciones"
+      title={`Transacciones ${date}`}
     >
       <View className="space-y-4">
         {/* Totales */}
