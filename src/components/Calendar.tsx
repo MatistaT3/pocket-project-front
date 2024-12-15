@@ -130,7 +130,7 @@ export function Calendar() {
   return (
     <View className="shadow-lg">
       <View
-        className="bg-white p-4 rounded-3xl overflow-hidden border border-veryPaleBlue/10"
+        className="bg-white p-4 mx-4 rounded-3xl overflow-hidden border border-veryPaleBlue/10"
         style={{
           elevation: 8, // Para Android
           shadowColor: "#755bce",
@@ -145,24 +145,27 @@ export function Calendar() {
         <GestureDetector gesture={swipeGesture}>
           <Animated.View style={animatedStyle}>
             {/* Header */}
-            <View className="flex-row justify-between items-center">
-              <View className="flex-row items-center space-x-4">
-                <Pressable onPress={handlePrevMonth}>
-                  <ChevronLeft size={24} color="#755bce" />
-                </Pressable>
-                <Pressable onPress={handleNextMonth}>
-                  <ChevronRight size={24} color="#755bce" />
-                </Pressable>
-                <Text className="text-textPrimary text-3xl font-bold">
-                  {formatDate(currentDate, DATE_FORMAT.MONTH_YEAR)}
-                </Text>
-              </View>
-              <View>
-                <Text className="text-textSecondary text-lg">
+            <View className="mb-4">
+              <View className="flex-row items-center justify-between mb-2">
+                <Text className="text-textSecondary text-base font-semibold">
                   Gasto mensual
                 </Text>
-                <Text className="text-textPrimary text-2xl font-bold">
+                <Text className="text-textPrimary text-xl font-bold">
                   ${totalMonthlySpend.toLocaleString("es-CL")}
+                </Text>
+              </View>
+
+              <View className="flex-row items-center">
+                <View className="flex-row items-center space-x-2">
+                  <Pressable onPress={handlePrevMonth} hitSlop={8}>
+                    <ChevronLeft size={24} color="#755bce" />
+                  </Pressable>
+                  <Pressable onPress={handleNextMonth} hitSlop={8}>
+                    <ChevronRight size={24} color="#755bce" />
+                  </Pressable>
+                </View>
+                <Text className="text-textPrimary text-2xl font-bold ml-2">
+                  {formatDate(currentDate, DATE_FORMAT.MONTH_YEAR)}
                 </Text>
               </View>
             </View>
