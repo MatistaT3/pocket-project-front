@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Pressable, Text } from "react-native";
+import { View, Pressable, Text, Dimensions } from "react-native";
 import { ChevronLeft, ChevronRight } from "lucide-react-native";
 import {
   startOfMonth,
@@ -101,15 +101,18 @@ export function Calendar() {
 
   const translateX = useSharedValue(0);
 
+  const screenWidth = Dimensions.get("window").width;
+  const swipeThreshold = screenWidth * 0.2;
+
   const swipeGesture = Gesture.Pan()
     .runOnJS(true)
     .onUpdate((e) => {
       translateX.value = e.translationX;
     })
     .onEnd((e) => {
-      if (e.translationX > 100) {
+      if (e.translationX > swipeThreshold) {
         handlePrevMonth();
-      } else if (e.translationX < -100) {
+      } else if (e.translationX < -swipeThreshold) {
         handleNextMonth();
       }
       translateX.value = withSpring(0);
