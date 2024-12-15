@@ -278,7 +278,7 @@ export function BankAppsLauncher() {
   if (banksWithApps.length === 0) return null;
 
   return (
-    <View className="mt-4">
+    <View>
       <View className=" shadow-lg">
         <View
           className="bg-white rounded-3xl mx-4"

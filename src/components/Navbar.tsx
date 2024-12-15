@@ -9,7 +9,7 @@ export function Navbar() {
 
   return (
     <>
-      <View className="mt-auto w-full">
+      <View className="w-full">
         <View className="shadow-lg">
           <View
             className="w-full bg-white"

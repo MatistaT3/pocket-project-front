@@ -9,7 +9,7 @@ export function MainContent() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View className="flex-1">
         <Calendar />
-        <View className="mt-2">
+        <View className="mt-4">
           <BankAppsLauncher />
         </View>
       </View>

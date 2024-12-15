@@ -11,11 +11,13 @@ export function HomeScreen() {
     <View className="flex-1 bg-background">
       <SafeAreaView edges={["top"]} className="flex-1">
         <Header />
-        <View className="flex-1 mt-2">
+        <View className="flex-1 mt-4">
           <MainContent />
         </View>
       </SafeAreaView>
-      <Navbar />
+      <View className="mt-auto">
+        <Navbar />
+      </View>
       <FloatingActionButton />
     </View>
   );

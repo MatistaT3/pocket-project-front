@@ -145,7 +145,7 @@ export function Calendar() {
         <GestureDetector gesture={swipeGesture}>
           <Animated.View style={animatedStyle}>
             {/* Header */}
-            <View className="flex-row justify-between items-center mb-6">
+            <View className="flex-row justify-between items-center">
               <View className="flex-row items-center space-x-4">
                 <Pressable onPress={handlePrevMonth}>
                   <ChevronLeft size={24} color="#755bce" />
