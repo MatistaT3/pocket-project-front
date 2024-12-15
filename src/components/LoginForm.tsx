@@ -1,15 +1,6 @@
 import React from "react";
 import { View, TextInput, Pressable, Text } from "react-native";
-
-interface LoginFormProps {
-  email: string;
-  setEmail: (email: string) => void;
-  password: string;
-  setPassword: (password: string) => void;
-  loading: boolean;
-  onSubmit: () => void;
-  onToggleMode: () => void;
-}
+import { BaseFormProps } from "../types/common.types";
 
 export function LoginForm({
   email,
@@ -19,7 +10,7 @@ export function LoginForm({
   loading,
   onSubmit,
   onToggleMode,
-}: LoginFormProps) {
+}: BaseFormProps) {
   return (
     <>
       <View

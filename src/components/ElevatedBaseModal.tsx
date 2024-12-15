@@ -9,14 +9,7 @@ import {
   ScrollView,
 } from "react-native";
 import { X } from "lucide-react-native";
-
-interface ElevatedBaseModalProps {
-  visible: boolean;
-  onClose: () => void;
-  children: React.ReactNode;
-  title?: string;
-  variant?: "bottom-sheet" | "center";
-}
+import { BaseModalProps } from "../types/common.types";
 
 export function ElevatedBaseModal({
   visible,
@@ -24,7 +17,7 @@ export function ElevatedBaseModal({
   children,
   title,
   variant = "center",
-}: ElevatedBaseModalProps) {
+}: BaseModalProps) {
   return (
     <Modal
       visible={visible}

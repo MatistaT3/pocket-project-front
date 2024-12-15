@@ -10,12 +10,13 @@ import {
 import { Building2, CreditCard, Plus, Trash2 } from "lucide-react-native";
 import { useBanks } from "../hooks/useBanks";
 import { ElevatedBaseModal } from "./ElevatedBaseModal";
-interface BankAccountsModalProps {
-  visible: boolean;
-  onClose: () => void;
-}
-
-type ModalView = "main" | "addBank" | "addAccount" | "addCard";
+import {
+  BankAccountsModalProps,
+  BankFormData,
+  AccountFormData,
+  CardFormData,
+} from "../types/bank.types";
+import { ModalView } from "../types/common.types";
 
 export function BankAccountsModal({
   visible,
@@ -36,14 +37,14 @@ export function BankAccountsModal({
   const [selectedAccount, setSelectedAccount] = useState<string | null>(null);
 
   // Estados para los formularios
-  const [bankName, setBankName] = useState("");
-  const [accountForm, setAccountForm] = useState({
+  const [bankName, setBankName] = useState<BankFormData>({ name: "" });
+  const [accountForm, setAccountForm] = useState<AccountFormData>({
     accountNumber: "",
     initialBalance: "",
   });
-  const [cardForm, setCardForm] = useState({
+  const [cardForm, setCardForm] = useState<CardFormData>({
     lastFourDigits: "",
-    type: "debit" as "debit" | "credit",
+    type: "debit",
   });
 
   // Lista estandarizada de bancos
@@ -106,7 +107,7 @@ export function BankAccountsModal({
 
       const newBank = await addBank(bankName);
       await refreshBanks();
-      setBankName("");
+      setBankName({ name: "" });
       setSelectedBank(newBank.id);
       setCurrentView("main");
     } catch (error) {
@@ -169,7 +170,7 @@ export function BankAccountsModal({
 
   const handleClose = () => {
     setCurrentView("main");
-    setBankName("");
+    setBankName({ name: "" });
     setAccountForm({ accountNumber: "", initialBalance: "" });
     setCardForm({ lastFourDigits: "", type: "debit" });
     onClose();

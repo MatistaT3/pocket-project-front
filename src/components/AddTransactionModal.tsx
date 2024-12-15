@@ -10,22 +10,17 @@ import {
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useTransactions } from "../hooks/useTransactions";
 import { useBanks } from "../hooks/useBanks";
+import { Building2, CreditCard, ChevronRight } from "lucide-react-native";
+import { ElevatedBaseModal } from "./ElevatedBaseModal";
 import {
   Transaction,
+  AddTransactionModalProps,
+  TransactionFormData,
   TransactionType,
   TransactionCategory,
   RecurrencyFrequency,
 } from "../types/transaction.types";
-import { Building2, CreditCard, ChevronRight } from "lucide-react-native";
-import { ElevatedBaseModal } from "./ElevatedBaseModal";
-
-interface AddTransactionModalProps {
-  visible: boolean;
-  onClose: () => void;
-  onSuccess?: () => Promise<void>;
-}
-
-type ModalView = "main" | "bankSelection";
+import { ModalView } from "../types/common.types";
 
 export function AddTransactionModal({
   visible,
@@ -35,22 +30,22 @@ export function AddTransactionModal({
   const { addTransaction } = useTransactions();
   const { banks } = useBanks();
   const [currentView, setCurrentView] = useState<ModalView>("main");
-  const [formData, setFormData] = useState({
-    type: "expense" as TransactionType,
-    category: "regular" as TransactionCategory,
+  const [formData, setFormData] = useState<TransactionFormData>({
+    type: "expense",
+    category: "regular",
     name: "",
     amount: "",
     date: new Date(),
-    selectedBank: null as string | null,
-    selectedAccount: null as string | null,
-    selectedCard: null as string | null,
+    selectedBank: null,
+    selectedAccount: null,
+    selectedCard: null,
     bankName: "",
     accountNumber: "",
     cardLastFour: "",
-    cardType: "debit" as "credit" | "debit",
+    cardType: "debit",
     isRecurrent: false,
     recurrentConfig: {
-      frequency: "monthly" as RecurrencyFrequency,
+      frequency: "monthly",
       customDays: 0,
     },
   });
