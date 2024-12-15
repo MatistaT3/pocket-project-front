@@ -197,12 +197,122 @@ export function useBanks() {
     }
   };
 
+  const deleteBank = async (bankId: string) => {
+    try {
+      // Primero obtenemos todas las cuentas asociadas al banco
+      const { data: accounts, error: accountsError } = await supabase
+        .from("bank_accounts")
+        .select("id")
+        .eq("user_bank_id", bankId);
+
+      if (accountsError) throw accountsError;
+
+      // Si hay cuentas, eliminamos primero sus tarjetas
+      if (accounts && accounts.length > 0) {
+        const accountIds = accounts.map((account) => account.id);
+
+        // Eliminar todas las tarjetas asociadas a estas cuentas
+        const { error: cardsError } = await supabase
+          .from("bank_cards")
+          .delete()
+          .in("bank_account_id", accountIds);
+
+        if (cardsError) throw cardsError;
+
+        // Eliminar todas las cuentas del banco
+        const { error: accountsDeleteError } = await supabase
+          .from("bank_accounts")
+          .delete()
+          .eq("user_bank_id", bankId);
+
+        if (accountsDeleteError) throw accountsDeleteError;
+      }
+
+      // Finalmente eliminamos el banco
+      const { error: bankError } = await supabase
+        .from("user_banks")
+        .delete()
+        .eq("id", bankId);
+
+      if (bankError) throw bankError;
+
+      // Actualizar el estado local
+      setBanks((prev) => prev.filter((bank) => bank.id !== bankId));
+    } catch (error) {
+      console.error("Error deleting bank:", error);
+      throw error;
+    }
+  };
+
+  const deleteAccount = async (accountId: string) => {
+    try {
+      // Primero eliminamos todas las tarjetas asociadas
+      const { error: cardsError } = await supabase
+        .from("bank_cards")
+        .delete()
+        .eq("bank_account_id", accountId);
+
+      if (cardsError) throw cardsError;
+
+      // Luego eliminamos la cuenta
+      const { error: accountError } = await supabase
+        .from("bank_accounts")
+        .delete()
+        .eq("id", accountId);
+
+      if (accountError) throw accountError;
+
+      // Actualizar el estado local
+      setBanks((prev) =>
+        prev.map((bank) => ({
+          ...bank,
+          accounts: bank.accounts.filter((account) => account.id !== accountId),
+        }))
+      );
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      throw error;
+    }
+  };
+
+  const deleteCard = async (cardId: string, accountId: string) => {
+    try {
+      const { error } = await supabase
+        .from("bank_cards")
+        .delete()
+        .eq("id", cardId);
+
+      if (error) throw error;
+
+      // Actualizar el estado local
+      setBanks((prev) =>
+        prev.map((bank) => ({
+          ...bank,
+          accounts: bank.accounts.map((account) =>
+            account.id === accountId
+              ? {
+                  ...account,
+                  cards: account.cards.filter((card) => card.id !== cardId),
+                }
+              : account
+          ),
+        }))
+      );
+    } catch (error) {
+      console.error("Error deleting card:", error);
+      throw error;
+    }
+  };
+
   return {
     banks,
     loading,
     addBank,
     addAccount,
     addCard,
+    deleteBank,
+    deleteAccount,
+    deleteCard,
     refreshBanks: fetchBanks,
   };
 }
