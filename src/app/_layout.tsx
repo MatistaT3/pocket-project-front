@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from "../context/AuthContext";
 import { AuthScreen } from "../screens/AuthScreen";
 import { HomeScreen } from "../screens/HomeScreen";
 import "../global.css";
+import { StatusBar } from "react-native";
 
 function RootLayout() {
   const { session, isLoading } = useAuth();
@@ -20,6 +21,12 @@ function RootLayout() {
 export default function Layout() {
   return (
     <SafeAreaProvider>
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor="transparent"
+        translucent={true}
+        networkActivityIndicatorVisible={true}
+      />
       <AuthProvider>
         <RootLayout />
       </AuthProvider>
