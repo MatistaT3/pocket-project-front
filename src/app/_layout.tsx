@@ -1,10 +1,8 @@
-import { View } from "react-native";
-import { Slot } from "expo-router";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { Auth } from "../components/Auth";
+import React from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AuthProvider, useAuth } from "../context/AuthContext";
-import { ProfileButton } from "../components/ProfileButton";
-import { Navbar } from "../components/Navbar";
+import { AuthScreen } from "../screens/AuthScreen";
+import { HomeScreen } from "../screens/HomeScreen";
 import "../global.css";
 
 function RootLayout() {
@@ -13,30 +11,10 @@ function RootLayout() {
   if (isLoading) return null;
 
   if (!session) {
-    return (
-      <View className="flex-1 bg-background">
-        <SafeAreaView edges={["top"]} className="flex-1">
-          <Auth />
-        </SafeAreaView>
-      </View>
-    );
+    return <AuthScreen />;
   }
 
-  return (
-    <View className="flex-1 bg-background">
-      <SafeAreaView edges={["top"]} className="flex-1">
-        <View className="flex-1">
-          <View className="absolute right-4 top-4 z-10">
-            <ProfileButton />
-          </View>
-          <View className="flex-1">
-            <Slot />
-          </View>
-        </View>
-      </SafeAreaView>
-      <Navbar />
-    </View>
-  );
+  return <HomeScreen />;
 }
 
 export default function Layout() {
