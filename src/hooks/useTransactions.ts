@@ -2,16 +2,8 @@ import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import { Transaction } from "../types/transaction.types";
 import { useAuth } from "../context/AuthContext";
-import { getIconByName, getIconName } from "../utils/iconHelper";
 import { format, parse } from "date-fns";
 import { es } from "date-fns/locale";
-
-interface TransactionWithIcon extends Transaction {
-  icon_data?: {
-    svg_path: string;
-    name: string;
-  };
-}
 
 export function useTransactions() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);

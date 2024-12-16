@@ -1,53 +1,44 @@
-import { format, isValid, parseISO } from "date-fns";
+import { format, isValid, parseISO, isSameDay as isSameDayFns } from "date-fns";
 import { es } from "date-fns/locale";
 
 export const DATE_FORMAT = {
   API: "dd/MM/yyyy",
-  DISPLAY: "dd/MM/yyyy",
-  DISPLAY_WITH_TIME: "dd/MM/yyyy HH:mm",
   MONTH_YEAR: "MMMM yyyy",
   DAY: "d",
-  FULL_DATE: "d 'de' MMMM",
+  MONTH: "MMMM",
+  YEAR: "yyyy",
+  WEEKDAY: "EEEE",
+  HOUR: "HH:mm",
+  FULL: "EEEE d 'de' MMMM 'de' yyyy",
+  FULL_WITH_TIME: "EEEE d 'de' MMMM 'de' yyyy HH:mm",
+  FULL_WITH_TIME_AND_SECONDS: "EEEE d 'de' MMMM 'de' yyyy HH:mm:ss",
 };
 
-/**
- * Recibe una fecha como `Date` o string (en formato ISO) y la formatea según el formato proporcionado.
- * Si la fecha es inválida, retorna una cadena vacía.
- */
 export const formatDate = (
   date: Date | string,
-  formatStr: string = DATE_FORMAT.DISPLAY
+  formatStr: string = DATE_FORMAT.API
 ): string => {
-  let dateObj: Date;
-
-  if (typeof date === "string") {
-    // Intentamos parsear la fecha desde una cadena ISO
-    // Si no es una cadena ISO válida, new Date() podría resultar en una fecha inválida.
-    dateObj = parseISO(date);
-  } else {
-    dateObj = date;
-  }
-
-  if (!isValid(dateObj)) {
-    console.error("Error: la fecha proporcionada no es válida.");
-    return "";
-  }
-
   try {
-    return format(dateObj, formatStr, { locale: es });
+    if (typeof date === "string") {
+      // Si es una fecha en formato DD/MM/YYYY
+      if (date.includes("/")) {
+        const [day, month, year] = date.split("/");
+        date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      } else {
+        // Si es una fecha en formato ISO
+        date = parseISO(date);
+      }
+    }
+
+    if (!isValid(date)) {
+      throw new Error("Invalid date");
+    }
+
+    return format(date, formatStr, { locale: es });
   } catch (error) {
-    console.error("Error formateando la fecha:", error);
+    console.error("Error formatting date:", error);
     return "";
   }
 };
 
-/**
- * Verifica si dos fechas corresponden al mismo día (año, mes, día).
- */
-export const isSameDay = (date1: Date, date2: Date): boolean => {
-  return (
-    date1.getDate() === date2.getDate() &&
-    date1.getMonth() === date2.getMonth() &&
-    date1.getFullYear() === date2.getFullYear()
-  );
-};
+export const isSameDay = isSameDayFns;
