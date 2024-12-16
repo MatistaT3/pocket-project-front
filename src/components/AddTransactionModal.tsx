@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Pressable,
@@ -28,7 +28,7 @@ export function AddTransactionModal({
   onSuccess,
 }: AddTransactionModalProps) {
   const { addTransaction } = useTransactions();
-  const { banks } = useBanks();
+  const { banks, refreshBanks } = useBanks();
   const [currentView, setCurrentView] = useState<ModalView>("main");
   const [formData, setFormData] = useState<TransactionFormData>({
     type: "expense",
@@ -75,6 +75,13 @@ export function AddTransactionModal({
     { label: "Semestral", value: "semiannual" },
     { label: "Personalizado", value: "custom" },
   ];
+
+  // Refrescar datos de bancos cuando el modal se abre
+  useEffect(() => {
+    if (visible) {
+      refreshBanks();
+    }
+  }, [visible]);
 
   const handleSubmit = async () => {
     try {
