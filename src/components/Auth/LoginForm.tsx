@@ -1,8 +1,8 @@
 import React from "react";
 import { View, TextInput, Pressable, Text } from "react-native";
-import { BaseFormProps } from "../types/common.types";
+import { BaseFormProps } from "../../types/common.types";
 
-export function RegisterForm({
+export function LoginForm({
   email,
   setEmail,
   password,
@@ -53,7 +53,7 @@ export function RegisterForm({
             onPress={onSubmit}
           >
             <Text className="text-white text-center font-semibold">
-              {loading ? "Cargando..." : "Registrarse"}
+              {loading ? "Cargando..." : "Iniciar Sesión"}
             </Text>
           </Pressable>
         </View>
@@ -61,7 +61,7 @@ export function RegisterForm({
 
       <Pressable className="mt-4" onPress={onToggleMode}>
         <Text className="text-moderateBlue text-center">
-          ¿Ya tienes cuenta? Inicia sesión
+          ¿No tienes cuenta? Regístrate
         </Text>
       </Pressable>
     </>

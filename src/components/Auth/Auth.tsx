@@ -6,7 +6,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import { supabase } from "../lib/supabase";
+import { supabase } from "../../lib/supabase";
 import { LoginForm } from "./LoginForm";
 import { RegisterForm } from "./RegisterForm";
 
