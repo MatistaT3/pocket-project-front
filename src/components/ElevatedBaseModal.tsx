@@ -14,6 +14,7 @@ import { BaseModalProps } from "../types/common.types";
 export function ElevatedBaseModal({
   visible,
   onClose,
+  onBack,
   children,
   title,
   variant = "center",
@@ -23,7 +24,7 @@ export function ElevatedBaseModal({
       visible={visible}
       transparent
       animationType="fade"
-      onRequestClose={onClose}
+      onRequestClose={onBack || onClose}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -61,7 +62,7 @@ export function ElevatedBaseModal({
                     {title}
                   </Text>
                   <Pressable
-                    onPress={onClose}
+                    onPress={onBack || onClose}
                     hitSlop={8}
                     className="p-2 -mr-2"
                   >

@@ -5,6 +5,7 @@ import { AuthScreen } from "../screens/AuthScreen";
 import { HomeScreen } from "../screens/HomeScreen";
 import "../global.css";
 import { StatusBar } from "react-native";
+import { TransactionProvider } from "../context/TransactionContext";
 
 function RootLayout() {
   const { session, isLoading } = useAuth();
@@ -28,7 +29,9 @@ export default function Layout() {
         networkActivityIndicatorVisible={true}
       />
       <AuthProvider>
-        <RootLayout />
+        <TransactionProvider>
+          <RootLayout />
+        </TransactionProvider>
       </AuthProvider>
     </SafeAreaProvider>
   );

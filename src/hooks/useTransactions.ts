@@ -67,6 +67,7 @@ export function useTransactions() {
         id: item.id,
         type: item.type,
         category: item.category,
+        subcategory: item.subcategory,
         name: item.name,
         icon_data: item.icon,
         amount: item.amount,
@@ -109,6 +110,7 @@ export function useTransactions() {
             user_id: session?.user.id,
             type: newTransaction.type,
             category: newTransaction.category,
+            subcategory: newTransaction.subcategory,
             name: newTransaction.name,
             icon_id:
               newTransaction.type === "income"
@@ -145,33 +147,18 @@ export function useTransactions() {
 
         if (balanceError) {
           console.warn("Error updating account balance:", balanceError);
-          // No lanzamos el error para que la transacción aún se complete
         }
       } catch (balanceError) {
         console.warn("Error calling update_account_balance:", balanceError);
       }
 
-      if (data) {
-        const transformedTransaction = {
-          ...data[0],
-          date: transformDateFormat(data[0].date),
-          recurrent: data[0].is_recurrent
-            ? {
-                frequency: data[0].recurrent_frequency,
-                startDate: data[0].recurrent_start_date
-                  ? transformDateFormat(data[0].recurrent_start_date)
-                  : undefined,
-                totalSpent: data[0].total_spent,
-              }
-            : undefined,
-        };
-        setTransactions((prev) => [...prev, transformedTransaction]);
-      }
+      // Actualizamos las transacciones inmediatamente
+      await fetchTransactions(new Date());
 
-      return data?.[0];
+      return true;
     } catch (error) {
       console.error("Error adding transaction:", error);
-      throw error;
+      return false;
     }
   };
 
@@ -180,6 +167,5 @@ export function useTransactions() {
     loading,
     addTransaction,
     fetchTransactions,
-    refreshTransactions: fetchTransactions,
   };
 }

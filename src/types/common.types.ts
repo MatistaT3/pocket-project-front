@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 export interface BaseModalProps {
   visible: boolean;
   onClose: () => void;
+  onBack?: () => void;
   children: ReactNode;
   title?: string;
   variant?: "bottom-sheet" | "center";
@@ -30,4 +31,5 @@ export type ModalView =
   | "addBank"
   | "addAccount"
   | "addCard"
-  | "bankSelection";
+  | "bankSelection"
+  | "categorySelection";

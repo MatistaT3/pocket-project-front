@@ -19,17 +19,19 @@ import { TransactionDetails } from "./TransactionDetails";
 import { DATE_FORMAT, formatDate } from "../utils/dateFormat";
 import { useTransactions } from "../hooks/useTransactions";
 import { DynamicIcon } from "./DynamicIcon";
+import { useTransactionContext } from "../context/TransactionContext";
 
 export function Calendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [detailsModalVisible, setDetailsModalVisible] = useState(false);
   const { transactions, loading, fetchTransactions } = useTransactions();
+  const { refreshCount } = useTransactionContext();
 
-  // Cargar transacciones cuando cambie el mes
+  // Cargar transacciones cuando cambie el mes o cuando se solicite un refresh
   useEffect(() => {
     fetchTransactions(currentDate);
-  }, [currentDate]);
+  }, [currentDate, refreshCount]);
 
   const handlePrevMonth = () => {
     const newDate = new Date(currentDate.setMonth(currentDate.getMonth() - 1));

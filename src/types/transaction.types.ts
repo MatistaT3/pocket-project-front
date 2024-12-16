@@ -1,19 +1,5 @@
 export type TransactionType = "expense" | "income";
 
-export type TransactionCategory =
-  | "subscription"
-  | "regular"
-  | "salary"
-  | "other";
-
-export type RecurrencyFrequency =
-  | "daily"
-  | "monthly"
-  | "bimonthly"
-  | "quarterly"
-  | "semiannual"
-  | "custom";
-
 export interface PaymentMethod {
   bank: string;
   lastFourDigits: string;
@@ -29,7 +15,8 @@ export interface RecurrentConfig {
 export interface Transaction {
   id: string;
   type: TransactionType;
-  category: TransactionCategory;
+  category: string;
+  subcategory?: string;
   name: string;
   amount: number;
   date: string;
@@ -49,7 +36,8 @@ export interface AddTransactionModalProps {
 
 export interface TransactionFormData {
   type: TransactionType;
-  category: TransactionCategory;
+  category: string;
+  subcategory: string;
   name: string;
   amount: string;
   date: Date;
@@ -65,6 +53,7 @@ export interface TransactionFormData {
     frequency: RecurrencyFrequency;
     customDays: number;
   };
+  otherCategorySuggestion: string;
 }
 
 export interface TransactionDetailsProps {
@@ -73,3 +62,11 @@ export interface TransactionDetailsProps {
   date: string;
   transactions: Transaction[];
 }
+
+export type RecurrencyFrequency =
+  | "daily"
+  | "monthly"
+  | "bimonthly"
+  | "quarterly"
+  | "semiannual"
+  | "custom";

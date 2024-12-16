@@ -1,12 +1,20 @@
 import React, { useState } from "react";
-import { Pressable, View } from "react-native";
+import { Pressable } from "react-native";
 import { Plus } from "lucide-react-native";
-import { AddTransactionModal } from "./AddTransactionModal";
-import { useTransactions } from "../hooks/useTransactions";
+import { AddTransactionModal } from "./AddTransaction";
+import { useTransactionContext } from "../context/TransactionContext";
 
 export function FloatingActionButton() {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { refreshTransactions } = useTransactions();
+  const { triggerRefresh } = useTransactionContext();
+
+  const handleSuccess = async () => {
+    setIsModalVisible(false);
+    // Pequeño delay para asegurar que la BD se actualizó
+    setTimeout(() => {
+      triggerRefresh();
+    }, 500);
+  };
 
   return (
     <>
@@ -31,7 +39,7 @@ export function FloatingActionButton() {
       <AddTransactionModal
         visible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
-        onSuccess={refreshTransactions}
+        onSuccess={handleSuccess}
       />
     </>
   );
