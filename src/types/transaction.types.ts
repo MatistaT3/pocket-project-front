@@ -4,6 +4,7 @@ export interface PaymentMethod {
   bank: string;
   lastFourDigits: string;
   type: "credit" | "debit";
+  accountNumber: string;
 }
 
 export interface RecurrentConfig {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { supabase } from "../lib/supabase";
 import { Transaction } from "../types/transaction.types";
 import { useAuth } from "../context/AuthContext";
@@ -77,6 +77,7 @@ export function useTransactions() {
           bank: item.payment_bank,
           lastFourDigits: item.payment_last_four,
           type: item.payment_type,
+          accountNumber: item.account_number,
         },
       }));
 
@@ -118,6 +119,7 @@ export function useTransactions() {
             payment_bank: newTransaction.paymentMethod.bank,
             payment_last_four: newTransaction.paymentMethod.lastFourDigits,
             payment_type: newTransaction.paymentMethod.type,
+            account_number: accountData.accountNumber,
           },
         ])
         .select();
@@ -144,12 +146,52 @@ export function useTransactions() {
         console.warn("Error calling update_account_balance:", balanceError);
       }
 
-      // Actualizamos las transacciones inmediatamente
-      await fetchTransactions(new Date());
-
       return true;
     } catch (error) {
       console.error("Error adding transaction:", error);
+      return false;
+    }
+  };
+
+  const deleteTransaction = async (
+    transactionId: string,
+    accountData: {
+      accountNumber: string;
+      amount: number;
+      type: "expense" | "income";
+    }
+  ) => {
+    try {
+      const { error } = await supabase
+        .from("transactions")
+        .delete()
+        .eq("id", transactionId);
+
+      if (error) throw error;
+
+      // Actualizar el saldo de la cuenta (revertir el efecto de la transacción)
+      try {
+        const { error: balanceError } = await supabase.rpc(
+          "update_account_balance",
+          {
+            p_account_number: accountData.accountNumber,
+            p_amount:
+              accountData.type === "expense"
+                ? accountData.amount
+                : -accountData.amount,
+          }
+        );
+
+        if (balanceError) {
+          console.warn("Error updating account balance:", balanceError);
+        }
+      } catch (balanceError) {
+        console.warn("Error calling update_account_balance:", balanceError);
+      }
+
+      return true;
+    } catch (error) {
+      console.error("Error deleting transaction:", error);
       return false;
     }
   };
@@ -159,5 +201,6 @@ export function useTransactions() {
     loading,
     addTransaction,
     fetchTransactions,
+    deleteTransaction,
   };
 }
