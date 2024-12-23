@@ -114,6 +114,7 @@ export function AddTransactionModal({
           bank: formData.bankName,
           lastFourDigits: formData.cardLastFour,
           type: formData.cardType,
+          accountNumber: formData.selectedAccount,
         },
         ...(formData.isRecurrent && {
           recurrent: {
