@@ -16,10 +16,10 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { TransactionDetails } from "./TransactionDetails";
-import { DATE_FORMAT, formatDate } from "../utils/dateFormat";
-import { useTransactions } from "../hooks/useTransactions";
-import { DynamicIcon } from "./DynamicIcon";
-import { useTransactionContext } from "../context/TransactionContext";
+import { DATE_FORMAT, formatDate } from "../../utils/dateFormat";
+import { useTransactions } from "../../hooks/useTransactions";
+import { DynamicIcon } from "../DynamicIcon";
+import { useTransactionContext } from "../../context/TransactionContext";
 
 export function Calendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -218,6 +218,11 @@ export function Calendar() {
                             <DynamicIcon
                               fallbackType={transaction.type}
                               size={16}
+                              subscriptionName={
+                                transaction.category === "subscriptions"
+                                  ? transaction.name
+                                  : undefined
+                              }
                             />
                           </View>
                         ))}

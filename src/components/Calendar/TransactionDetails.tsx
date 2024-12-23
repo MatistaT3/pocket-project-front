@@ -1,11 +1,11 @@
 import React from "react";
 import { View, Text, ScrollView, Pressable, Alert } from "react-native";
-import { ElevatedBaseModal } from "./ElevatedBaseModal";
-import { DynamicIcon } from "./DynamicIcon";
+import { ElevatedBaseModal } from "../ElevatedBaseModal";
+import { DynamicIcon } from "../DynamicIcon";
 import { Trash2 } from "lucide-react-native";
-import { TransactionDetailsProps } from "../types/transaction.types";
-import { useTransactions } from "../hooks/useTransactions";
-import { useTransactionContext } from "../context/TransactionContext";
+import { TransactionDetailsProps } from "../../types/transaction.types";
+import { useTransactions } from "../../hooks/useTransactions";
+import { useTransactionContext } from "../../context/TransactionContext";
 
 export function TransactionDetails({
   visible,

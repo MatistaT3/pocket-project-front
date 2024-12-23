@@ -1,6 +1,6 @@
 import React from "react";
 import { View } from "react-native";
-import { Calendar } from "./Calendar";
+import { Calendar } from "./Calendar/Calendar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BankAppsLauncher } from "./BankAppsLauncher";
 

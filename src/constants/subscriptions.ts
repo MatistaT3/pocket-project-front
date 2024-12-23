@@ -207,3 +207,7 @@ export const getSubscriptionsBySubcategory = (
 export const getSubscriptionById = (id: string) => {
   return SUBSCRIPTIONS.find((sub) => sub.id === id);
 };
+
+export const getSubscriptionByName = (name: string) => {
+  return SUBSCRIPTIONS.find((sub) => sub.name === name);
+};
