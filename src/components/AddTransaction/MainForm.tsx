@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import { View, Pressable, Text, TextInput, ScrollView } from "react-native";
-import { Tag, ChevronRight } from "lucide-react-native";
+import {
+  Tag,
+  ChevronRight,
+  Receipt,
+  CreditCard,
+  ArrowDownCircle,
+  ArrowUpCircle,
+} from "lucide-react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import {
   TransactionFormData,
@@ -8,6 +15,8 @@ import {
 } from "../../types/transaction.types";
 import { TRANSACTION_CATEGORIES } from "../../constants/categories";
 import { ModalView } from "../../types/common.types";
+import { SubscriptionSelector } from "./SubscriptionSelector";
+import { Subscription } from "../../constants/subscriptions";
 
 interface MainFormProps {
   formData: TransactionFormData;
@@ -16,6 +25,8 @@ interface MainFormProps {
   setCurrentView: (view: ModalView) => void;
 }
 
+type TransactionMode = "expense" | "income" | "subscription";
+
 export function MainForm({
   formData,
   setFormData,
@@ -23,40 +34,175 @@ export function MainForm({
   setCurrentView,
 }: MainFormProps) {
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedSubscription, setSelectedSubscription] =
+    useState<Subscription | null>(null);
+  const [transactionMode, setTransactionMode] =
+    useState<TransactionMode>("expense");
+  const [showSubscriptionSelector, setShowSubscriptionSelector] =
+    useState(false);
+
+  const handleSubscriptionSelect = (subscription: Subscription) => {
+    setSelectedSubscription(subscription);
+    setFormData({
+      ...formData,
+      type: "expense",
+      name: subscription.name,
+      category: "subscriptions",
+      subcategory: subscription.subcategory,
+    });
+    setShowSubscriptionSelector(false);
+  };
 
   return (
     <ScrollView className="max-h-[600px]">
       <View className="space-y-4">
-        {/* Tipo de transacción */}
+        {/* Selector de tipo mejorado */}
         <View>
-          <Text className="text-textSecondary mb-2">Tipo</Text>
+          <Text className="text-textSecondary mb-2">Tipo de Transacción</Text>
           <View className="flex-row space-x-2">
-            {["expense", "income"].map((type) => (
-              <Pressable
-                key={type}
-                className={`flex-1 p-3 rounded-xl ${
-                  formData.type === type
-                    ? "bg-veryPaleBlue"
-                    : "bg-veryPaleBlue/20"
-                }`}
-                onPress={() =>
-                  setFormData({
-                    ...formData,
-                    type: type as TransactionType,
-                  })
-                }
-              >
-                <Text className="text-textPrimary text-center">
-                  {type === "expense" ? "Gasto" : "Ingreso"}
+            <Pressable
+              className={`flex-1 p-4 rounded-xl ${
+                transactionMode === "expense"
+                  ? "bg-moderateBlue"
+                  : "bg-veryPaleBlue/20"
+              }`}
+              onPress={() => {
+                setTransactionMode("expense");
+                setShowSubscriptionSelector(false);
+                setSelectedSubscription(null);
+                setFormData({
+                  ...formData,
+                  type: "expense",
+                  category: "",
+                  subcategory: "",
+                });
+              }}
+            >
+              <View className="items-center space-y-2">
+                <ArrowUpCircle
+                  size={24}
+                  color={transactionMode === "expense" ? "white" : "#755bce"}
+                />
+                <Text
+                  className={`text-center font-medium ${
+                    transactionMode === "expense"
+                      ? "text-white"
+                      : "text-textPrimary"
+                  }`}
+                >
+                  Gasto
                 </Text>
-              </Pressable>
-            ))}
+              </View>
+            </Pressable>
+
+            <Pressable
+              className={`flex-1 p-4 rounded-xl ${
+                transactionMode === "subscription"
+                  ? "bg-moderateBlue"
+                  : "bg-veryPaleBlue/20"
+              }`}
+              onPress={() => {
+                setTransactionMode("subscription");
+                setShowSubscriptionSelector(true);
+                setFormData({
+                  ...formData,
+                  type: "expense",
+                });
+              }}
+            >
+              <View className="items-center space-y-2">
+                <Receipt
+                  size={24}
+                  color={
+                    transactionMode === "subscription" ? "white" : "#755bce"
+                  }
+                />
+                <Text
+                  className={`text-center font-medium ${
+                    transactionMode === "subscription"
+                      ? "text-white"
+                      : "text-textPrimary"
+                  }`}
+                >
+                  Suscripción
+                </Text>
+              </View>
+            </Pressable>
+
+            <Pressable
+              className={`flex-1 p-4 rounded-xl ${
+                transactionMode === "income"
+                  ? "bg-moderateBlue"
+                  : "bg-veryPaleBlue/20"
+              }`}
+              onPress={() => {
+                setTransactionMode("income");
+                setShowSubscriptionSelector(false);
+                setSelectedSubscription(null);
+                setFormData({
+                  ...formData,
+                  type: "income",
+                  category: "",
+                  subcategory: "",
+                });
+              }}
+            >
+              <View className="items-center space-y-2">
+                <ArrowDownCircle
+                  size={24}
+                  color={transactionMode === "income" ? "white" : "#755bce"}
+                />
+                <Text
+                  className={`text-center font-medium ${
+                    transactionMode === "income"
+                      ? "text-white"
+                      : "text-textPrimary"
+                  }`}
+                >
+                  Ingreso
+                </Text>
+              </View>
+            </Pressable>
           </View>
         </View>
 
-        {/* Categoría - Solo mostrar para gastos */}
-        {formData.type === "expense" && (
-          <View className="max-h-[100px]">
+        {/* Selector de Suscripción */}
+        {transactionMode === "subscription" && showSubscriptionSelector && (
+          <View className="space-y-2">
+            <SubscriptionSelector
+              selectedSubscription={selectedSubscription}
+              onSelectSubscription={handleSubscriptionSelect}
+            />
+            <Pressable
+              className="bg-veryPaleBlue/20 p-3 rounded-xl mt-2"
+              onPress={() => {
+                setTransactionMode("expense");
+                setShowSubscriptionSelector(false);
+              }}
+            >
+              <Text className="text-textPrimary text-center">
+                No encuentro mi suscripción
+              </Text>
+            </Pressable>
+          </View>
+        )}
+
+        {/* Monto */}
+        <View>
+          <Text className="text-textSecondary mb-2">Monto</Text>
+          <TextInput
+            className="bg-veryPaleBlue/10 text-textPrimary p-3 rounded-xl"
+            value={formData.amount}
+            onChangeText={(text) => setFormData({ ...formData, amount: text })}
+            placeholder="0"
+            placeholderTextColor="#755bce/75"
+            keyboardType="decimal-pad"
+          />
+        </View>
+
+        {/* Categoría - Solo mostrar si es gasto normal */}
+        {transactionMode === "expense" && (
+          <View>
             <Text className="text-textSecondary mb-2">Categoría</Text>
             <Pressable
               className="bg-veryPaleBlue/10 p-4 rounded-xl flex-row items-center justify-between"
@@ -75,8 +221,8 @@ export function MainForm({
               <ChevronRight size={20} color="#755bce" />
             </Pressable>
             {formData.subcategory && (
-              <Text className="text-textSecondary mt-1 ml-2 mb-2">
-                Subcategoria:{" "}
+              <Text className="text-textSecondary mt-1 ml-2">
+                Subcategoría:{" "}
                 {
                   TRANSACTION_CATEGORIES.find(
                     (c) => c.id === formData.category
@@ -88,32 +234,21 @@ export function MainForm({
           </View>
         )}
 
-        {/* Nombre */}
-        <View>
-          <Text className="text-textSecondary mb-2">Nombre</Text>
-          <TextInput
-            className="bg-veryPaleBlue/10 text-textPrimary p-3 rounded-xl"
-            value={formData.name}
-            onChangeText={(text) => setFormData({ ...formData, name: text })}
-            placeholder="Nombre de la transacción"
-            placeholderTextColor="#755bce/75"
-          />
-        </View>
+        {/* Nombre - Solo mostrar si NO es modo suscripción */}
+        {transactionMode !== "subscription" && (
+          <View>
+            <Text className="text-textSecondary mb-2">Nombre</Text>
+            <TextInput
+              className="bg-veryPaleBlue/10 text-textPrimary p-3 rounded-xl"
+              value={formData.name}
+              onChangeText={(text) => setFormData({ ...formData, name: text })}
+              placeholder="Nombre de la transacción"
+              placeholderTextColor="#755bce/75"
+            />
+          </View>
+        )}
 
-        {/* Monto */}
-        <View>
-          <Text className="text-textSecondary mb-2">Monto</Text>
-          <TextInput
-            className="bg-veryPaleBlue/10 text-textPrimary p-3 rounded-xl"
-            value={formData.amount}
-            onChangeText={(text) => setFormData({ ...formData, amount: text })}
-            placeholder="0"
-            placeholderTextColor="#755bce/75"
-            keyboardType="decimal-pad"
-          />
-        </View>
-
-        {/* Selección de banco */}
+        {/* Método de Pago */}
         <View>
           <Text className="text-textSecondary mb-2">Método de Pago</Text>
           <Pressable
