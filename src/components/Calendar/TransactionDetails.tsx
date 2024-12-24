@@ -69,70 +69,74 @@ export function TransactionDetails({
       onClose={onClose}
       title={`Transacciones ${date}`}
     >
-      <View className="space-y-4">
-        <View className="flex-row justify-between bg-veryPaleBlue/10 p-4 rounded-xl">
-          <View className="items-center flex-1">
-            <Text className="text-textSecondary font-medium mb-1">
-              Ingresos
-            </Text>
-            <Text className="text-green-500 text-lg font-bold">
+      <View className="p-4 space-y-4">
+        {/* Summary Cards */}
+        <View className="flex-row space-x-4">
+          <View className="flex-1 bg-green-50 py-2 px-4 rounded-xl">
+            <Text className="text-sm text-green-700">Ingresos</Text>
+            <Text className="text-lg font-bold text-green-600">
               +${formatNumber(totals.income)}
             </Text>
           </View>
-          <View className="w-[1px] bg-veryPaleBlue/20" />
-          <View className="items-center flex-1">
-            <Text className="text-textSecondary font-medium mb-1">Gastos</Text>
-            <Text className="text-red-500 text-lg font-bold">
+          <View className="flex-1 bg-red-50 py-2 px-4 rounded-xl">
+            <Text className="text-sm text-red-700">Gastos</Text>
+            <Text className="text-lg font-bold text-red-600">
               -${formatNumber(totals.expenses)}
             </Text>
           </View>
         </View>
 
         <ScrollView className="space-y-2 max-h-96">
-          {transactions.map((transaction) => (
-            <View
-              key={transaction.id}
-              className="flex-row items-center justify-between bg-veryPaleBlue/5 p-4 rounded-xl"
-            >
-              <View className="flex-row items-center space-x-3 flex-1">
-                <View
-                  className={`rounded-full p-1 ${
-                    transaction.type === "income"
-                      ? "bg-green-500/10"
-                      : "bg-red-500/10"
-                  }`}
-                >
-                  <DynamicIcon fallbackType={transaction.type} size={24} />
-                </View>
-                <View className="flex-1">
-                  <Text className="text-textPrimary font-medium">
-                    {transaction.name}
-                  </Text>
-                  <Text className="text-textSecondary text-sm">
-                    {transaction.paymentMethod.bank} ••••{" "}
-                    {transaction.paymentMethod.lastFourDigits}
-                  </Text>
+          {transactions.map((transaction, index) => (
+            <View key={transaction.id} className="w-full">
+              <View className="bg-background p-4 rounded-xl">
+                <View className="flex-row items-center space-x-4">
+                  <View className="p-2 rounded-lg">
+                    <DynamicIcon
+                      fallbackType={transaction.type}
+                      size={24}
+                      subscriptionName={
+                        transaction.category === "subscriptions"
+                          ? transaction.name
+                          : undefined
+                      }
+                    />
+                  </View>
+
+                  <View className="flex-1">
+                    <Text className="text-base font-medium text-textPrimary mb-0.5">
+                      {transaction.name}
+                    </Text>
+                    <Text className="text-sm text-textSecondary">
+                      {transaction.paymentMethod.bank} ••••{" "}
+                      {transaction.paymentMethod.lastFourDigits}
+                    </Text>
+                  </View>
+
+                  <View className="items-end space-y-1">
+                    <Text
+                      className={`text-base font-bold ${
+                        transaction.type === "income"
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }`}
+                    >
+                      {transaction.type === "income" ? "+" : "-"}$
+                      {formatNumber(transaction.amount)}
+                    </Text>
+                    <Pressable
+                      onPress={() => handleDelete(transaction)}
+                      className="w-7 h-7 rounded-full items-center justify-center active:bg-red-50"
+                      hitSlop={8}
+                    >
+                      <Trash2 size={16} color="#ef4444" />
+                    </Pressable>
+                  </View>
                 </View>
               </View>
-              <View className="flex-row items-center space-x-3">
-                <Text
-                  className={`font-bold ${
-                    transaction.type === "income"
-                      ? "text-green-500"
-                      : "text-red-500"
-                  }`}
-                >
-                  {transaction.type === "income" ? "+" : "-"}$
-                  {formatNumber(transaction.amount)}
-                </Text>
-                <Pressable
-                  onPress={() => handleDelete(transaction)}
-                  className="w-8 h-8 rounded-full items-center justify-center active:bg-red-500/10"
-                  hitSlop={8}
-                >
-                  <Trash2 size={20} color="#ef4444" />
-                </Pressable>
-              </View>
+              {transactions.length > 1 && index < transactions.length - 1 && (
+                <View className="h-[1px] bg-gray-100 mx-1 my-2" />
+              )}
             </View>
           ))}
         </ScrollView>
