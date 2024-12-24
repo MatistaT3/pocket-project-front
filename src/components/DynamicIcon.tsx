@@ -14,7 +14,10 @@ import AppleTvLogo from "./Logo/AppleTvLogo";
 import ParamountPlusLogo from "./Logo/ParamountPlusLogo";
 import CrunchyrollLogo from "./Logo/CrunchyrollLogo";
 import YoutubePremiumLogo from "./Logo/YoutubePremiumLogo";
-// import SpotifyLogo from "./Logo/spotify";
+import SpotifyLogo from "./Logo/SpotifyLogo";
+import AppleMusicLogo from "./Logo/AppleMusicLogo";
+import AmazonMusicLogo from "./Logo/AmazonMusicLogo";
+import YoutubeMusicLogo from "./Logo/YoutubeMusicLogo";
 // etc...
 
 const subscriptionLogos: {
@@ -29,7 +32,10 @@ const subscriptionLogos: {
   paramount_plus: ParamountPlusLogo,
   crunchyroll: CrunchyrollLogo,
   youtube_premium: YoutubePremiumLogo,
-  // spotify: SpotifyLogo,
+  spotify: SpotifyLogo,
+  apple_music: AppleMusicLogo,
+  amazon_music: AmazonMusicLogo,
+  youtube_music: YoutubeMusicLogo,
   // etc...
 };
 
