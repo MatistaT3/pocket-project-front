@@ -7,6 +7,13 @@ import { getSubscriptionByName } from "../constants/subscriptions";
 
 // Importar los logos aquí
 import NetflixLogo from "./Logo/NetflixLogo";
+import DisneyPlusLogo from "./Logo/DisneyPlusLogo";
+import AmazonPrimeLogo from "./Logo/AmazonPrimeLogo";
+import HboMaxLogo from "./Logo/HboMaxLogo";
+import AppleTvLogo from "./Logo/AppleTvLogo";
+import ParamountPlusLogo from "./Logo/ParamountPlusLogo";
+import CrunchyrollLogo from "./Logo/CrunchyrollLogo";
+import YoutubePremiumLogo from "./Logo/YoutubePremiumLogo";
 // import SpotifyLogo from "./Logo/spotify";
 // etc...
 
@@ -15,6 +22,13 @@ const subscriptionLogos: {
 } = {
   // Mapear los logos aquí
   netflix: NetflixLogo,
+  disney_plus: DisneyPlusLogo,
+  amazon_prime: AmazonPrimeLogo,
+  hbo_max: HboMaxLogo,
+  apple_tv: AppleTvLogo,
+  paramount_plus: ParamountPlusLogo,
+  crunchyroll: CrunchyrollLogo,
+  youtube_premium: YoutubePremiumLogo,
   // spotify: SpotifyLogo,
   // etc...
 };

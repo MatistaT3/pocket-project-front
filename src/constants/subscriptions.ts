@@ -31,7 +31,7 @@ export const SUBSCRIPTIONS: Subscription[] = [
     subcategory: "digital_subscriptions",
     type: "expense",
     service_type: "streaming",
-    iconName: "disney",
+    iconName: "disney_plus",
   },
   {
     id: "prime_video",
@@ -40,7 +40,7 @@ export const SUBSCRIPTIONS: Subscription[] = [
     subcategory: "digital_subscriptions",
     type: "expense",
     service_type: "streaming",
-    iconName: "prime",
+    iconName: "amazon_prime",
   },
   {
     id: "max",
@@ -49,7 +49,7 @@ export const SUBSCRIPTIONS: Subscription[] = [
     subcategory: "digital_subscriptions",
     type: "expense",
     service_type: "streaming",
-    iconName: "max",
+    iconName: "hbo_max",
   },
   {
     id: "apple_tv",
@@ -67,7 +67,7 @@ export const SUBSCRIPTIONS: Subscription[] = [
     subcategory: "digital_subscriptions",
     type: "expense",
     service_type: "streaming",
-    iconName: "paramount",
+    iconName: "paramount_plus",
   },
   {
     id: "crunchyroll",
@@ -78,15 +78,7 @@ export const SUBSCRIPTIONS: Subscription[] = [
     service_type: "streaming",
     iconName: "crunchyroll",
   },
-  {
-    id: "funimation",
-    name: "Funimation",
-    category: "subscriptions",
-    subcategory: "digital_subscriptions",
-    type: "expense",
-    service_type: "streaming",
-    iconName: "funimation",
-  },
+
   {
     id: "youtube_premium",
     name: "Youtube Premium",
