@@ -156,30 +156,6 @@ export const SUBSCRIPTIONS: Subscription[] = [
     type: "expense",
     iconName: "smartfit",
   },
-  {
-    id: "pacific",
-    name: "Gym Pacific",
-    category: "subscriptions",
-    subcategory: "gym",
-    type: "expense",
-    iconName: "pacific",
-  },
-  {
-    id: "sportlife",
-    name: "Sportlife",
-    category: "subscriptions",
-    subcategory: "gym",
-    type: "expense",
-    iconName: "sportlife",
-  },
-  {
-    id: "energy",
-    name: "Gym Energy",
-    category: "subscriptions",
-    subcategory: "gym",
-    type: "expense",
-    iconName: "energy",
-  },
 ];
 
 // Helper functions

@@ -4,8 +4,6 @@ import Svg, { Path } from "react-native-svg";
 import { CircleDollarSign } from "lucide-react-native";
 import { IconProps } from "../types/common.types";
 import { getSubscriptionByName } from "../constants/subscriptions";
-
-// Importar los logos aquí
 import NetflixLogo from "./Logo/NetflixLogo";
 import DisneyPlusLogo from "./Logo/DisneyPlusLogo";
 import AmazonPrimeLogo from "./Logo/AmazonPrimeLogo";
@@ -18,8 +16,9 @@ import SpotifyLogo from "./Logo/SpotifyLogo";
 import AppleMusicLogo from "./Logo/AppleMusicLogo";
 import AmazonMusicLogo from "./Logo/AmazonMusicLogo";
 import YoutubeMusicLogo from "./Logo/YoutubeMusicLogo";
-// etc...
-
+import GoogleOneLogo from "./Logo/GoogleOneLogo";
+import ICloudLogo from "./Logo/ICloudLogo";
+import SmartFitLogo from "./Logo/SmartFitLogo";
 const subscriptionLogos: {
   [key: string]: React.ComponentType<{ width: number; height: number }>;
 } = {
@@ -36,7 +35,9 @@ const subscriptionLogos: {
   apple_music: AppleMusicLogo,
   amazon_music: AmazonMusicLogo,
   youtube_music: YoutubeMusicLogo,
-  // etc...
+  google_one: GoogleOneLogo,
+  icloud: ICloudLogo,
+  smartfit: SmartFitLogo,
 };
 
 interface DynamicIconProps extends IconProps {
