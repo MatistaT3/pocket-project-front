@@ -8,6 +8,7 @@ import {
   startOfWeek,
   endOfWeek,
   isSameDay,
+  isToday,
 } from "date-fns";
 import { GestureDetector, Gesture } from "react-native-gesture-handler";
 import Animated, {
@@ -20,6 +21,7 @@ import { DATE_FORMAT, formatDate } from "../../utils/dateFormat";
 import { useTransactions } from "../../hooks/useTransactions";
 import { DynamicIcon } from "../DynamicIcon";
 import { useTransactionContext } from "../../context/TransactionContext";
+import { es } from "date-fns/locale";
 
 interface CalendarProps {
   onMonthChange?: (date: Date) => void;
@@ -100,19 +102,14 @@ export function Calendar({ onMonthChange }: CalendarProps) {
     end: calendarEnd,
   });
 
-  const totalMonthlySpend = transactions
-    .filter((t) => t.type === "expense")
-    .reduce((total, t) => total + t.amount, 0);
-
-  const weekDays = ["LUN", "MAR", "MIÉ", "JUE", "VIE", "SÁB", "DOM"];
-
   const translateX = useSharedValue(0);
-
   const screenWidth = Dimensions.get("window").width;
   const swipeThreshold = screenWidth * 0.2;
 
   const swipeGesture = Gesture.Pan()
     .runOnJS(true)
+    .activeOffsetX([-10, 10])
+    .failOffsetY([-5, 5])
     .onUpdate((e) => {
       translateX.value = e.translationX;
     })
@@ -136,101 +133,147 @@ export function Calendar({ onMonthChange }: CalendarProps) {
   };
 
   return (
-    <View className="bg-white p-4 rounded-3xl border border-veryPaleBlue/10">
+    <View className="border-b border-gray-100">
       <GestureDetector gesture={swipeGesture}>
         <Animated.View style={animatedStyle}>
-          {/* Header */}
-          <View className="mb-4">
-            <View className="flex-row items-center">
-              <View className="flex-row items-center space-x-2">
-                <Pressable onPress={handlePrevMonth} hitSlop={8}>
-                  <ChevronLeft size={24} color="#755bce" />
-                </Pressable>
-                <Pressable onPress={handleNextMonth} hitSlop={8}>
-                  <ChevronRight size={24} color="#755bce" />
-                </Pressable>
-              </View>
-              <Text className="text-textPrimary text-2xl font-bold ml-2">
-                {formatDate(currentDate, DATE_FORMAT.MONTH_YEAR)}
-              </Text>
-            </View>
+          {/* Header del Mes */}
+          <View className="flex-row items-center justify-between px-4 py-3">
+            <Pressable
+              onPress={handlePrevMonth}
+              className="w-10 h-10 items-center justify-center rounded-full active:bg-black/5"
+            >
+              <ChevronLeft size={24} color="black" />
+            </Pressable>
+            <Text className="text-black text-lg font-medium">
+              {formatDate(currentDate, DATE_FORMAT.MONTH_YEAR)}
+            </Text>
+            <Pressable
+              onPress={handleNextMonth}
+              className="w-10 h-10 items-center justify-center rounded-full active:bg-black/5"
+            >
+              <ChevronRight size={24} color="black" />
+            </Pressable>
           </View>
 
-          {/* Week days */}
-          <View className="flex-row justify-between mb-4">
-            {weekDays.map((day) => (
-              <View key={day} className="flex-1 items-center">
-                <Text className="text-textSecondary font-medium">{day}</Text>
+          {/* Días de la semana */}
+          <View className="flex-row px-2 py-2">
+            {["L", "M", "M", "J", "V", "S", "D"].map((day, index) => (
+              <View key={index} className="flex-1 items-center">
+                <Text className="text-gray-500 text-sm">{day}</Text>
               </View>
             ))}
           </View>
 
-          {/* Calendar grid */}
-          <View className="flex-row flex-wrap justify-between gap-y-2">
-            {daysInMonth.map((date) => {
-              const dateStr = formatDate(date, DATE_FORMAT.API);
-              const transactionsForDate = getTransactionsForDate(date);
-              const hasTransactions = transactionsForDate.length > 0;
-              const displayTransactions = transactionsForDate.slice(0, 2);
-              const hasMoreTransactions = transactionsForDate.length > 2;
-              const isToday = isSameDay(date, new Date());
+          {/* Grid de días */}
+          <View className="px-2 pb-2">
+            {Array.from({ length: Math.ceil(daysInMonth.length / 7) }).map(
+              (_, weekIndex) => (
+                <View key={weekIndex} className="flex-row">
+                  {daysInMonth
+                    .slice(weekIndex * 7, weekIndex * 7 + 7)
+                    .map((date, dayIndex) => {
+                      const isCurrentMonth =
+                        date.getMonth() === currentDate.getMonth();
+                      const transactionsForDate = getTransactionsForDate(date);
+                      const hasTransactions = transactionsForDate.length > 0;
+                      const displayTransactions = transactionsForDate.slice(
+                        0,
+                        2
+                      );
+                      const hasMoreTransactions =
+                        transactionsForDate.length > 2;
+                      const isCurrentDay = isToday(date);
+                      const isSelected = selectedDate === formatDate(date);
 
-              return (
-                <Pressable
-                  key={dateStr}
-                  className={`w-[14%] h-12 items-center justify-between rounded-2xl py-1
-                      ${isToday ? "bg-moderateBlue/10" : ""}`}
-                  onPress={() => handleDatePress(date)}
-                >
-                  <Text
-                    className={`${
-                      isToday
-                        ? "text-textSecondary font-bold"
-                        : "text-textPrimary"
-                    }`}
-                  >
-                    {formatDate(date, DATE_FORMAT.DAY)}
-                  </Text>
-                  {hasTransactions && (
-                    <View className="flex-row items-center">
-                      {displayTransactions.map((transaction, index) => (
-                        <View
-                          key={transaction.id}
-                          style={{ marginLeft: index > 0 ? -4 : 0 }}
+                      return (
+                        <Pressable
+                          key={dayIndex}
+                          onPress={() => handleDatePress(date)}
+                          className="flex-1 aspect-square items-center py-1.5"
                         >
-                          <DynamicIcon
-                            fallbackType={transaction.type}
-                            size={16}
-                            subscriptionName={
-                              transaction.category === "subscriptions"
-                                ? transaction.name
-                                : undefined
-                            }
-                          />
-                        </View>
-                      ))}
-                      {hasMoreTransactions && (
-                        <Text className="text-textSecondary text-xs ml-1">
-                          +{transactionsForDate.length - 2}
-                        </Text>
-                      )}
-                    </View>
-                  )}
-                </Pressable>
-              );
-            })}
-          </View>
+                          <View className="relative flex items-center">
+                            {/* Número del día */}
+                            <View
+                              className={`w-9 h-9 items-center justify-center rounded-full
+                                ${isSelected ? "bg-black" : ""}
+                                ${
+                                  isCurrentDay && !isSelected
+                                    ? "border border-black"
+                                    : ""
+                                }
+                              `}
+                            >
+                              <Text
+                                className={`text-sm
+                                  ${
+                                    isSelected
+                                      ? "text-white font-medium"
+                                      : isCurrentMonth
+                                      ? "text-black"
+                                      : "text-gray-400"
+                                  }
+                                  ${
+                                    isCurrentDay && !isSelected
+                                      ? "font-medium"
+                                      : ""
+                                  }
+                                `}
+                              >
+                                {formatDate(date, DATE_FORMAT.DAY)}
+                              </Text>
+                            </View>
 
-          <TransactionDetails
-            visible={detailsModalVisible}
-            onClose={() => setDetailsModalVisible(false)}
-            date={selectedDate || ""}
-            transactions={
-              selectedDate ? getTransactionsForDate(selectedDate) : []
-            }
-          />
+                            {/* Contenedor para iconos */}
+                            <View className="absolute -bottom-2">
+                              {hasTransactions && isCurrentMonth && (
+                                <View className="flex-row items-center">
+                                  {displayTransactions.map(
+                                    (transaction, index) => (
+                                      <View
+                                        key={transaction.id}
+                                        style={{
+                                          marginLeft: index > 0 ? -6 : 0,
+                                        }}
+                                      >
+                                        <DynamicIcon
+                                          fallbackType={transaction.type}
+                                          size={14}
+                                          subscriptionName={
+                                            transaction.category ===
+                                            "subscriptions"
+                                              ? transaction.name
+                                              : undefined
+                                          }
+                                          color="black"
+                                        />
+                                      </View>
+                                    )
+                                  )}
+                                  {hasMoreTransactions && (
+                                    <Text className="text-gray-500 text-[10px] ml-0.5">
+                                      +{transactionsForDate.length - 2}
+                                    </Text>
+                                  )}
+                                </View>
+                              )}
+                            </View>
+                          </View>
+                        </Pressable>
+                      );
+                    })}
+                </View>
+              )
+            )}
+          </View>
         </Animated.View>
       </GestureDetector>
+
+      <TransactionDetails
+        visible={detailsModalVisible}
+        onClose={() => setDetailsModalVisible(false)}
+        date={selectedDate || ""}
+        transactions={selectedDate ? getTransactionsForDate(selectedDate) : []}
+      />
     </View>
   );
 }

@@ -5,7 +5,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        background: "##fafbff", // Color de fondo secundario
+        background: "#FFFFFF", // Color de fondo secundario
 
         veryPaleBlue: "#f5f6ff",
         shadowColor: "#755bce",

@@ -69,73 +69,73 @@ export function TransactionDetails({
       onClose={onClose}
       title={`Transacciones ${date}`}
     >
-      <View className="p-4 space-y-4">
+      <View className="p-4">
         {/* Summary Cards */}
-        <View className="flex-row space-x-4">
-          <View className="flex-1 bg-green-50 py-2 px-4 rounded-xl">
-            <Text className="text-sm text-green-700">Ingresos</Text>
-            <Text className="text-lg font-bold text-green-600">
+        <View className="flex-row justify-between">
+          <View>
+            <Text className="text-sm text-gray-500">Ingresos</Text>
+            <Text className="text-lg font-bold text-emerald-600">
               +${formatNumber(totals.income)}
             </Text>
           </View>
-          <View className="flex-1 bg-red-50 py-2 px-4 rounded-xl">
-            <Text className="text-sm text-red-700">Gastos</Text>
-            <Text className="text-lg font-bold text-red-600">
+          <View>
+            <Text className="text-sm text-gray-500">Gastos</Text>
+            <Text className="text-lg font-bold text-rose-600">
               -${formatNumber(totals.expenses)}
             </Text>
           </View>
         </View>
 
-        <ScrollView className="space-y-2 max-h-96">
+        {/* Separador */}
+        <View className="h-[0.5px] bg-black/10 my-4" />
+
+        <ScrollView className="space-y-4">
           {transactions.map((transaction, index) => (
-            <View key={transaction.id} className="w-full">
-              <View className="bg-background p-4 rounded-xl">
-                <View className="flex-row items-center space-x-4">
-                  <View className="p-2 rounded-lg">
-                    <DynamicIcon
-                      fallbackType={transaction.type}
-                      size={24}
-                      subscriptionName={
-                        transaction.category === "subscriptions"
-                          ? transaction.name
-                          : undefined
-                      }
-                    />
-                  </View>
+            <View key={transaction.id}>
+              <View className="flex-row items-center">
+                <DynamicIcon
+                  fallbackType={transaction.type}
+                  size={24}
+                  subscriptionName={
+                    transaction.category === "subscriptions"
+                      ? transaction.name
+                      : undefined
+                  }
+                  color="black"
+                />
 
-                  <View className="flex-1">
-                    <Text className="text-base font-medium text-textPrimary mb-0.5">
-                      {transaction.name}
-                    </Text>
-                    <Text className="text-sm text-textSecondary">
-                      {transaction.paymentMethod.bank} ••••{" "}
-                      {transaction.paymentMethod.lastFourDigits}
-                    </Text>
-                  </View>
+                <View className="flex-1 ml-4">
+                  <Text className="text-base font-medium text-black">
+                    {transaction.name}
+                  </Text>
+                  <Text className="text-sm text-gray-500">
+                    {transaction.paymentMethod.bank} ••••{" "}
+                    {transaction.paymentMethod.lastFourDigits}
+                  </Text>
+                </View>
 
-                  <View className="items-end space-y-1">
-                    <Text
-                      className={`text-base font-bold ${
-                        transaction.type === "income"
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
-                    >
-                      {transaction.type === "income" ? "+" : "-"}$
-                      {formatNumber(transaction.amount)}
-                    </Text>
-                    <Pressable
-                      onPress={() => handleDelete(transaction)}
-                      className="w-7 h-7 rounded-full items-center justify-center active:bg-red-50"
-                      hitSlop={8}
-                    >
-                      <Trash2 size={16} color="#ef4444" />
-                    </Pressable>
-                  </View>
+                <View className="items-end">
+                  <Text
+                    className={`text-base font-bold ${
+                      transaction.type === "income"
+                        ? "text-emerald-600"
+                        : "text-rose-600"
+                    }`}
+                  >
+                    {transaction.type === "income" ? "+" : "-"}$
+                    {formatNumber(transaction.amount)}
+                  </Text>
+                  <Pressable
+                    onPress={() => handleDelete(transaction)}
+                    className="mt-1 w-7 h-7 rounded-full items-center justify-center active:bg-black/5"
+                    hitSlop={8}
+                  >
+                    <Trash2 size={16} color="black" />
+                  </Pressable>
                 </View>
               </View>
               {transactions.length > 1 && index < transactions.length - 1 && (
-                <View className="h-[1px] bg-gray-100 mx-1 my-2" />
+                <View className="h-[0.5px] bg-black/10 my-4" />
               )}
             </View>
           ))}
