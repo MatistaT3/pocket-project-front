@@ -1,6 +1,7 @@
 import React from "react";
-import { View, TextInput, Pressable, Text } from "react-native";
+import { View, TextInput, Text, Pressable } from "react-native";
 import { BaseFormProps } from "../../types/common.types";
+import { Button } from "../Button";
 
 export function LoginForm({
   email,
@@ -13,32 +14,20 @@ export function LoginForm({
 }: BaseFormProps) {
   return (
     <>
-      <View
-        className="bg-white rounded-3xl p-6 border border-veryPaleBlue/10"
-        style={{
-          elevation: 8,
-          shadowColor: "#755bce",
-          shadowOffset: {
-            width: 0,
-            height: 4,
-          },
-          shadowOpacity: 0.15,
-          shadowRadius: 12,
-        }}
-      >
-        <View className="space-y-4">
+      <View className="space-y-6">
+        <View className="space-y-6">
           <TextInput
-            className="bg-veryPaleBlue/50 text-textPrimary p-4 rounded-xl mb-4"
+            className="text-black p-4 rounded-full bg-black/[0.03]"
             placeholder="Email"
-            placeholderTextColor="#755bce"
+            placeholderTextColor="#9ca3af"
             value={email}
             autoCapitalize="none"
             onChangeText={setEmail}
           />
           <TextInput
-            className="bg-veryPaleBlue/50 text-textPrimary p-4 rounded-xl"
+            className="text-black p-4 mt-4 rounded-full bg-black/[0.03]"
             placeholder="Password"
-            placeholderTextColor="#755bce"
+            placeholderTextColor="#9ca3af"
             value={password}
             autoCapitalize="none"
             secureTextEntry
@@ -46,21 +35,16 @@ export function LoginForm({
           />
         </View>
 
-        <View className="mt-8">
-          <Pressable
-            className="bg-moderateBlue p-4 rounded-xl"
-            disabled={loading}
-            onPress={onSubmit}
-          >
-            <Text className="text-white text-center font-semibold">
-              {loading ? "Cargando..." : "Iniciar Sesión"}
-            </Text>
-          </Pressable>
-        </View>
+        <Button
+          label={loading ? "Cargando..." : "Iniciar Sesión"}
+          onPress={onSubmit}
+          disabled={loading}
+          className="mt-4"
+        />
       </View>
 
-      <Pressable className="mt-4" onPress={onToggleMode}>
-        <Text className="text-moderateBlue text-center">
+      <Pressable onPress={onToggleMode} className="mt-4">
+        <Text className="text-black text-center">
           ¿No tienes cuenta? Regístrate
         </Text>
       </Pressable>

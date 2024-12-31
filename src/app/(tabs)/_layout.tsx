@@ -24,18 +24,11 @@ export default function TabsLayout() {
           paddingTop: 8,
           paddingBottom: 24,
           backgroundColor: "white",
-          borderTopWidth: 0,
-          elevation: 8,
-          shadowColor: "#755bce",
-          shadowOffset: {
-            width: 0,
-            height: -6,
-          },
-          shadowOpacity: 0.15,
-          shadowRadius: 12,
+          borderTopWidth: 0.5,
+          borderTopColor: "#00000008",
         },
-        tabBarActiveTintColor: "#755bce",
-        tabBarInactiveTintColor: "#64748b",
+        tabBarActiveTintColor: "black",
+        tabBarInactiveTintColor: "#00000066",
       }}
     >
       <Tabs.Screen

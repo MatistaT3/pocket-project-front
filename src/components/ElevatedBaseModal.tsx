@@ -43,34 +43,19 @@ export function ElevatedBaseModal({
                   ? "rounded-t-3xl pt-2"
                   : "mx-4 rounded-3xl"
               }`}
-              style={{
-                maxHeight: variant === "bottom-sheet" ? "70%" : undefined,
-                elevation: 8,
-                shadowColor: "#755bce",
-                shadowOffset: {
-                  width: 0,
-                  height: variant === "bottom-sheet" ? -4 : 4,
-                },
-                shadowOpacity: 0.15,
-                shadowRadius: 12,
-              }}
             >
               <Pressable>
-                {/* Header */}
                 <View className="flex-row items-center justify-between px-4 py-2">
-                  <Text className="text-textPrimary text-lg font-medium flex-1">
-                    {title}
-                  </Text>
+                  <Text className="text-black text-lg flex-1">{title}</Text>
                   <Pressable
                     onPress={onBack || onClose}
                     hitSlop={8}
                     className="p-2 -mr-2"
                   >
-                    <X size={24} color="#755bce" />
+                    <X size={24} color="black" />
                   </Pressable>
                 </View>
 
-                {/* Content */}
                 <ScrollView
                   className="px-4"
                   keyboardShouldPersistTaps="handled"
