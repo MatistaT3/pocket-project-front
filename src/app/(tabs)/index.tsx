@@ -1,12 +1,10 @@
-import React from "react";
+import { CalendarScreen } from "../../screens/CalendarScreen";
 import { View } from "react-native";
-import { Header } from "../components/Header";
-import { Navbar } from "../components/Navbar";
+import { Header } from "../../components/Header";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { FloatingActionButton } from "../components/FloatingActionButton";
-import { CalendarScreen } from "./CalendarScreen";
+import { FloatingActionButton } from "../../components/FloatingActionButton";
 
-export function HomeScreen() {
+export default function TabCalendarScreen() {
   return (
     <View className="flex-1 bg-background">
       <SafeAreaView edges={["top"]} className="flex-1">
@@ -15,9 +13,6 @@ export function HomeScreen() {
           <CalendarScreen />
         </View>
       </SafeAreaView>
-      <View className="mt-auto">
-        <Navbar />
-      </View>
       <FloatingActionButton />
     </View>
   );

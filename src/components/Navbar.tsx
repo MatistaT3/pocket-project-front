@@ -1,63 +1,6 @@
-import React, { useState } from "react";
-import { View, Pressable, Text } from "react-native";
-import { Calendar, CreditCard } from "lucide-react-native";
-import { BankAccountsModal } from "./AddBankAccountsModal";
+import React from "react";
+import { View } from "react-native";
 
 export function Navbar() {
-  const [bankAccountsModalVisible, setBankAccountsModalVisible] =
-    useState(false);
-
-  return (
-    <>
-      <View className="w-full">
-        <View className="shadow-lg">
-          <View
-            className="w-full bg-white"
-            style={{
-              elevation: 8,
-              shadowColor: "#755bce",
-              shadowOffset: {
-                width: 0,
-                height: -6,
-              },
-              shadowOpacity: 0.15,
-              shadowRadius: 12,
-            }}
-          >
-            <View className="h-[56px] flex-row items-center justify-between px-8">
-              <View className="items-center">
-                <Pressable
-                  className="w-[48px] h-[48px] items-center justify-center"
-                  hitSlop={8}
-                >
-                  <Calendar size={24} color="#755bce" />
-                  <Text className="text-textPrimary text-xs mt-1">
-                    Calendario
-                  </Text>
-                </Pressable>
-              </View>
-
-              <View className="items-center">
-                <Pressable
-                  className="w-[48px] h-[48px] items-center justify-center"
-                  hitSlop={8}
-                  onPress={() => setBankAccountsModalVisible(true)}
-                >
-                  <CreditCard size={24} color="#755bce" />
-                  <Text className="text-textPrimary text-xs mt-1">Cuentas</Text>
-                </Pressable>
-              </View>
-            </View>
-
-            <View className="h-8 bg-white" />
-          </View>
-        </View>
-      </View>
-
-      <BankAccountsModal
-        visible={bankAccountsModalVisible}
-        onClose={() => setBankAccountsModalVisible(false)}
-      />
-    </>
-  );
+  return <View className="h-20" />;
 }

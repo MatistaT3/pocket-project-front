@@ -1,23 +1,10 @@
 import React from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AuthProvider, useAuth } from "../context/AuthContext";
-import { AuthScreen } from "../screens/AuthScreen";
-import { HomeScreen } from "../screens/HomeScreen";
 import "../global.css";
 import { StatusBar } from "react-native";
 import { TransactionProvider } from "../context/TransactionContext";
-
-function RootLayout() {
-  const { session, isLoading } = useAuth();
-
-  if (isLoading) return null;
-
-  if (!session) {
-    return <AuthScreen />;
-  }
-
-  return <HomeScreen />;
-}
+import { Stack } from "expo-router";
 
 export default function Layout() {
   return (
@@ -30,7 +17,10 @@ export default function Layout() {
       />
       <AuthProvider>
         <TransactionProvider>
-          <RootLayout />
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="auth" options={{ headerShown: false }} />
+          </Stack>
         </TransactionProvider>
       </AuthProvider>
     </SafeAreaProvider>
