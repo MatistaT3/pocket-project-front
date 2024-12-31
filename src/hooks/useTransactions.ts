@@ -32,30 +32,29 @@ export function useTransactions() {
     }
   };
 
-  const fetchTransactions = async (month?: Date) => {
+  // Función base para obtener transacciones de un período específico
+  const fetchTransactionsByPeriod = async (startDate: Date, endDate: Date) => {
+    if (!session?.user) return [];
+
     try {
-      let query = supabase.from("transactions").select(`
-        *,
-        icon:icons(svg_path, name)
-      `);
+      const formattedStartDate = format(startDate, "yyyy-MM-dd");
+      const formattedEndDate = format(endDate, "yyyy-MM-dd");
 
-      if (month) {
-        const startOfMonth = format(
-          new Date(month.getFullYear(), month.getMonth(), 1),
-          "yyyy-MM-dd"
-        );
-        const endOfMonth = format(
-          new Date(month.getFullYear(), month.getMonth() + 1, 0),
-          "yyyy-MM-dd"
-        );
-        query = query.gte("date", startOfMonth).lte("date", endOfMonth);
-      }
-
-      const { data, error } = await query.order("date", { ascending: false });
+      const { data, error } = await supabase
+        .from("transactions")
+        .select(
+          `
+          *,
+          icon:icons(svg_path, name)
+        `
+        )
+        .gte("date", formattedStartDate)
+        .lte("date", formattedEndDate)
+        .order("date", { ascending: false });
 
       if (error) throw error;
 
-      const transformedData = data.map((item) => ({
+      return data.map((item) => ({
         id: item.id,
         type: item.type,
         category: item.category,
@@ -80,8 +79,60 @@ export function useTransactions() {
           accountNumber: item.account_number,
         },
       }));
+    } catch (error) {
+      console.error("Error fetching transactions:", error);
+      return [];
+    }
+  };
 
-      setTransactions(transformedData);
+  // Función para obtener transacciones de un mes específico
+  const fetchTransactionsByMonth = async (month: Date) => {
+    const startOfMonth = new Date(month.getFullYear(), month.getMonth(), 1);
+    const endOfMonth = new Date(month.getFullYear(), month.getMonth() + 1, 0);
+    return fetchTransactionsByPeriod(startOfMonth, endOfMonth);
+  };
+
+  // Función principal que obtiene las transacciones del mes actual y el anterior
+  const fetchTransactions = async (selectedMonth: Date) => {
+    setLoading(true);
+    try {
+      // Obtener transacciones del mes anterior
+      const startOfPreviousMonth = new Date(
+        selectedMonth.getFullYear(),
+        selectedMonth.getMonth() - 1,
+        1
+      );
+      const endOfPreviousMonth = new Date(
+        selectedMonth.getFullYear(),
+        selectedMonth.getMonth(),
+        0
+      );
+      const previousMonthTransactions = await fetchTransactionsByPeriod(
+        startOfPreviousMonth,
+        endOfPreviousMonth
+      );
+
+      // Obtener transacciones del mes actual
+      const startOfCurrentMonth = new Date(
+        selectedMonth.getFullYear(),
+        selectedMonth.getMonth(),
+        1
+      );
+      const endOfCurrentMonth = new Date(
+        selectedMonth.getFullYear(),
+        selectedMonth.getMonth() + 1,
+        0
+      );
+      const currentMonthTransactions = await fetchTransactionsByPeriod(
+        startOfCurrentMonth,
+        endOfCurrentMonth
+      );
+
+      // Combinar las transacciones
+      setTransactions([
+        ...previousMonthTransactions,
+        ...currentMonthTransactions,
+      ]);
     } catch (error) {
       console.error("Error fetching transactions:", error);
     } finally {
@@ -201,6 +252,7 @@ export function useTransactions() {
     loading,
     addTransaction,
     fetchTransactions,
+    fetchTransactionsByMonth, // Exportamos la función para uso específico
     deleteTransaction,
   };
 }
