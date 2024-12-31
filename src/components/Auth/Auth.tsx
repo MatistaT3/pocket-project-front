@@ -9,12 +9,14 @@ import {
 import { supabase } from "../../lib/supabase";
 import { LoginForm } from "./LoginForm";
 import { RegisterForm } from "./RegisterForm";
+import { useRouter } from "expo-router";
 
 export function Auth() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   async function signInWithEmail() {
     setLoading(true);
@@ -23,7 +25,11 @@ export function Auth() {
       password,
     });
 
-    if (error) Alert.alert(error.message);
+    if (error) {
+      Alert.alert("Error", error.message);
+    } else {
+      router.replace("/(tabs)");
+    }
     setLoading(false);
   }
 

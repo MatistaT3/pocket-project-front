@@ -1,5 +1,5 @@
 import { Tabs, useRouter } from "expo-router";
-import { Calendar, CreditCard } from "lucide-react-native";
+import { CalendarDays, CreditCard } from "lucide-react-native";
 import { useAuth } from "../../context/AuthContext";
 import { useEffect } from "react";
 
@@ -43,7 +43,7 @@ export default function TabsLayout() {
         options={{
           title: "Calendario",
           tabBarIcon: ({ color, size }) => (
-            <Calendar size={size} color={color} />
+            <CalendarDays size={size} color={color} />
           ),
         }}
       />
