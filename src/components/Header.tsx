@@ -4,11 +4,9 @@ import { ProfileButton } from "./ProfileButton";
 
 export function Header() {
   return (
-    <View className="bg-background px-6">
+    <View className="px-4 py-3">
       <View className="flex-row justify-between items-center">
-        <Text className="text-textPrimary text-2xl font-bold">
-          Pocket Money
-        </Text>
+        <Text className="text-black text-xl font-medium">Pocket Money</Text>
         <ProfileButton />
       </View>
     </View>
