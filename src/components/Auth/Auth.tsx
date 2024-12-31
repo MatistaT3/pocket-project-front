@@ -20,17 +20,22 @@ export function Auth() {
 
   async function signInWithEmail() {
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (error) {
-      Alert.alert("Error", error.message);
-    } else {
-      router.replace("/(tabs)");
+      if (error) {
+        Alert.alert("Error", error.message);
+      } else {
+        router.replace("/(tabs)");
+      }
+    } catch (error: any) {
+      Alert.alert("Error", "Hubo un problema al iniciar sesión");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   async function signUpWithEmail() {

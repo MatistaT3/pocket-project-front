@@ -1,7 +1,7 @@
-import { BankAccountsScreen } from "../../screens/BankAccountsScreen";
 import { View } from "react-native";
-import { Header } from "../../components/Header";
+import { BankAccountsScreen } from "../../screens/BankAccountsScreen";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Header } from "../../components/Header";
 
 export default function TabBankAccountsScreen() {
   return (

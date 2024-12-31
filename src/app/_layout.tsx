@@ -5,6 +5,7 @@ import "../global.css";
 import { StatusBar } from "react-native";
 import { TransactionProvider } from "../context/TransactionContext";
 import { Stack } from "expo-router";
+import { BankAccountsProvider } from "../context/BankAccountsContext";
 
 export default function Layout() {
   return (
@@ -16,12 +17,14 @@ export default function Layout() {
         networkActivityIndicatorVisible={true}
       />
       <AuthProvider>
-        <TransactionProvider>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="auth" options={{ headerShown: false }} />
-          </Stack>
-        </TransactionProvider>
+        <BankAccountsProvider>
+          <TransactionProvider>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="auth" options={{ headerShown: false }} />
+            </Stack>
+          </TransactionProvider>
+        </BankAccountsProvider>
       </AuthProvider>
     </SafeAreaProvider>
   );
