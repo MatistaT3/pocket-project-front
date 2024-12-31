@@ -1,17 +1,13 @@
 import React from "react";
 import { View } from "react-native";
-import { Calendar } from "./Calendar/Calendar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { BankAppsLauncher } from "./BankAppsLauncher";
+import { Calendar } from "../components/Calendar/Calendar";
 
-export function MainContent() {
+export function CalendarScreen() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View className="flex-1">
         <Calendar />
-        <View className="mt-4">
-          <BankAppsLauncher />
-        </View>
       </View>
     </GestureHandlerRootView>
   );

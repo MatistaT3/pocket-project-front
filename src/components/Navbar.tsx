@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, Pressable, Text } from "react-native";
-import { Home, CreditCard } from "lucide-react-native";
+import { Calendar, CreditCard } from "lucide-react-native";
 import { BankAccountsModal } from "./AddBankAccountsModal";
 
 export function Navbar() {
@@ -30,8 +30,10 @@ export function Navbar() {
                   className="w-[48px] h-[48px] items-center justify-center"
                   hitSlop={8}
                 >
-                  <Home size={24} color="#755bce" />
-                  <Text className="text-textPrimary text-xs mt-1">Home</Text>
+                  <Calendar size={24} color="#755bce" />
+                  <Text className="text-textPrimary text-xs mt-1">
+                    Calendario
+                  </Text>
                 </Pressable>
               </View>
 
