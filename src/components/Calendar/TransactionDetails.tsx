@@ -1,20 +1,68 @@
-import React from "react";
-import { View, Text, ScrollView, Pressable, Alert } from "react-native";
-import { ElevatedBaseModal } from "../ElevatedBaseModal";
+import React, { useEffect } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  Pressable,
+  Alert,
+  Animated,
+} from "react-native";
 import { DynamicIcon } from "../DynamicIcon";
-import { Trash2 } from "lucide-react-native";
+import { Trash2, X } from "lucide-react-native";
 import { TransactionDetailsProps } from "../../types/transaction.types";
 import { useTransactions } from "../../hooks/useTransactions";
 import { useTransactionContext } from "../../context/TransactionContext";
 
+type Props = Omit<TransactionDetailsProps, "visible"> & {
+  style?: any;
+};
+
 export function TransactionDetails({
-  visible,
-  onClose,
   date,
   transactions,
-}: TransactionDetailsProps) {
+  onClose,
+  style,
+}: Props) {
   const { deleteTransaction } = useTransactions();
   const { triggerRefresh } = useTransactionContext();
+  const fadeAnim = React.useRef(new Animated.Value(0)).current;
+  const scaleAnim = React.useRef(new Animated.Value(0.95)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        damping: 20,
+        mass: 1,
+        stiffness: 300,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+
+  const handleClose = () => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scaleAnim, {
+        toValue: 0.95,
+        damping: 20,
+        mass: 1,
+        stiffness: 300,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      onClose();
+    });
+  };
 
   const handleDelete = async (transaction: any) => {
     Alert.alert(
@@ -35,6 +83,7 @@ export function TransactionDetails({
             if (success) {
               triggerRefresh();
               Alert.alert("Éxito", "Transacción eliminada correctamente");
+              handleClose();
             } else {
               Alert.alert("Error", "No se pudo eliminar la transacción");
             }
@@ -64,32 +113,50 @@ export function TransactionDetails({
   );
 
   return (
-    <ElevatedBaseModal
-      visible={visible}
-      onClose={onClose}
-      title={`Transacciones ${date}`}
+    <Animated.View
+      className="absolute bg-white rounded-2xl shadow-sm p-4 z-10 w-[300px]"
+      style={[
+        style,
+        {
+          opacity: fadeAnim,
+          transform: [{ scale: scaleAnim }],
+        },
+      ]}
     >
-      <View className="p-4">
-        {/* Summary Cards */}
-        <View className="flex-row justify-between">
-          <View>
-            <Text className="text-sm text-gray-500">Ingresos</Text>
-            <Text className="text-lg font-bold text-emerald-600">
-              +${formatNumber(totals.income)}
-            </Text>
-          </View>
-          <View>
-            <Text className="text-sm text-gray-500">Gastos</Text>
-            <Text className="text-lg font-bold text-rose-600">
-              -${formatNumber(totals.expenses)}
-            </Text>
-          </View>
+      {/* Header */}
+      <View className="flex-row justify-between items-center mb-4">
+        <Text className="text-black font-medium">{date}</Text>
+        <Pressable
+          onPress={handleClose}
+          className="w-8 h-8 items-center justify-center rounded-full active:bg-black/5"
+          hitSlop={8}
+        >
+          <X size={20} color="black" />
+        </Pressable>
+      </View>
+
+      {/* Summary Cards */}
+      <View className="flex-row justify-between mb-4">
+        <View>
+          <Text className="text-sm text-black/60">Ingresos</Text>
+          <Text className="text-lg font-medium text-emerald-600">
+            +${formatNumber(totals.income)}
+          </Text>
         </View>
+        <View>
+          <Text className="text-sm text-black/60">Gastos</Text>
+          <Text className="text-lg font-medium text-rose-600">
+            -${formatNumber(totals.expenses)}
+          </Text>
+        </View>
+      </View>
 
-        {/* Separador */}
-        <View className="h-[0.5px] bg-black/10 my-4" />
-
-        <ScrollView className="space-y-4">
+      {/* Transactions List */}
+      <ScrollView
+        className="max-h-[300px]"
+        showsVerticalScrollIndicator={false}
+      >
+        <View className="space-y-4">
           {transactions.map((transaction, index) => (
             <View key={transaction.id}>
               <View className="flex-row items-center">
@@ -108,7 +175,7 @@ export function TransactionDetails({
                   <Text className="text-base font-medium text-black">
                     {transaction.name}
                   </Text>
-                  <Text className="text-sm text-gray-500">
+                  <Text className="text-sm text-black/60">
                     {transaction.paymentMethod.bank} ••••{" "}
                     {transaction.paymentMethod.lastFourDigits}
                   </Text>
@@ -116,7 +183,7 @@ export function TransactionDetails({
 
                 <View className="items-end">
                   <Text
-                    className={`text-base font-bold ${
+                    className={`text-base font-medium ${
                       transaction.type === "income"
                         ? "text-emerald-600"
                         : "text-rose-600"
@@ -139,8 +206,8 @@ export function TransactionDetails({
               )}
             </View>
           ))}
-        </ScrollView>
-      </View>
-    </ElevatedBaseModal>
+        </View>
+      </ScrollView>
+    </Animated.View>
   );
 }
