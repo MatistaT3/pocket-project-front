@@ -172,19 +172,18 @@ export default function TabBankAccountsScreen() {
     );
   };
 
-  const handleBankSelect = (bankId: string | null) => {
-    setSelectedBank(bankId);
-    if (bankId) {
-      setCurrentView("bankDetail");
-    }
-  };
-
   const renderContent = () => {
+    const bank = banks.find((b) => b.id === selectedBank);
+
     switch (currentView) {
       case "addBank":
-        return <AddBankForm onSelectBank={handleAddBank} />;
-      case "bankDetail": {
-        const bank = banks.find((b) => b.id === selectedBank);
+        return (
+          <AddBankForm
+            onSelectBank={handleAddBank}
+            onBack={() => setCurrentView("main")}
+          />
+        );
+      case "bankDetail":
         if (!bank) return null;
         return (
           <AccountList
@@ -204,9 +203,7 @@ export default function TabBankAccountsScreen() {
             onDeleteCard={handleDeleteCard}
           />
         );
-      }
-      case "addAccount": {
-        const bank = banks.find((b) => b.id === selectedBank);
+      case "addAccount":
         if (!bank) return null;
         return (
           <AddAccountForm
@@ -215,11 +212,10 @@ export default function TabBankAccountsScreen() {
             onAddAccount={handleAddAccount}
           />
         );
-      }
-      case "addCard": {
-        const bank = banks.find((b) => b.id === selectedBank);
-        const account = bank?.accounts.find((a) => a.id === selectedAccount);
-        if (!bank || !account) return null;
+      case "addCard":
+        if (!bank) return null;
+        const account = bank.accounts.find((a) => a.id === selectedAccount);
+        if (!account) return null;
         return (
           <AddCardForm
             bankName={bank.name}
@@ -228,7 +224,6 @@ export default function TabBankAccountsScreen() {
             onAddCard={handleAddCard}
           />
         );
-      }
       default:
         return (
           <BankList
@@ -242,13 +237,18 @@ export default function TabBankAccountsScreen() {
     }
   };
 
+  const handleBankSelect = (bankId: string | null) => {
+    setSelectedBank(bankId);
+    if (bankId) {
+      setCurrentView("bankDetail");
+    }
+  };
+
   return (
     <View className="flex-1 bg-background">
       <SafeAreaView edges={["top"]} className="flex-1">
         <Header />
-        <View className="flex-1 px-4">
-          <ScrollView className="flex-1">{renderContent()}</ScrollView>
-        </View>
+        <View className="flex-1 px-4">{renderContent()}</View>
       </SafeAreaView>
     </View>
   );

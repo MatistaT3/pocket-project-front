@@ -6,7 +6,6 @@ import { supabase } from "../lib/supabase";
 import { CountryPicker } from "react-native-country-codes-picker";
 import { Stack, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Button } from "../components/Button";
 
 export default function ProfileScreen() {
   const [editingField, setEditingField] = useState<"name" | "phone" | null>(
@@ -234,7 +233,12 @@ export default function ProfileScreen() {
         </View>
 
         <View className="mt-auto p-4">
-          <Button variant="danger" label="Cerrar Sesión" onPress={signOut} />
+          <Pressable
+            className="h-12 rounded-full items-center justify-center bg-rose-600 active:bg-rose-500"
+            onPress={signOut}
+          >
+            <Text className="text-white font-medium">Cerrar Sesión</Text>
+          </Pressable>
         </View>
       </View>
 

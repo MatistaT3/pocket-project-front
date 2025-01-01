@@ -1,7 +1,6 @@
 import React from "react";
 import { View, TextInput, Text, Pressable } from "react-native";
 import { BaseFormProps } from "../../types/common.types";
-import { Button } from "../Button";
 
 export function LoginForm({
   email,
@@ -35,15 +34,27 @@ export function LoginForm({
           />
         </View>
 
-        <Button
-          label={loading ? "Cargando..." : "Iniciar Sesión"}
+        <Pressable
+          className={`h-12 rounded-full items-center justify-center ${
+            loading ? "bg-black/20" : "bg-black active:bg-black/90"
+          }`}
           onPress={onSubmit}
           disabled={loading}
-          className="mt-4"
-        />
+        >
+          <Text
+            className={`font-medium ${
+              loading ? "text-black/40" : "text-white"
+            }`}
+          >
+            {loading ? "Cargando..." : "Iniciar Sesión"}
+          </Text>
+        </Pressable>
       </View>
 
-      <Pressable onPress={onToggleMode} className="mt-4">
+      <Pressable
+        onPress={onToggleMode}
+        className="mt-4 py-2 active:bg-black/5 rounded-full"
+      >
         <Text className="text-black text-center">
           ¿No tienes cuenta? Regístrate
         </Text>

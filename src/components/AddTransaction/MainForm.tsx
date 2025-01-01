@@ -17,7 +17,6 @@ import { TRANSACTION_CATEGORIES } from "../../constants/categories";
 import { ModalView } from "../../types/common.types";
 import { SubscriptionSelector } from "./SubscriptionSelector";
 import { Subscription } from "../../constants/subscriptions";
-import { Button } from "../Button";
 import { router, useNavigation, useLocalSearchParams } from "expo-router";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
@@ -221,14 +220,17 @@ export function MainForm({
               selectedSubscription={selectedSubscription}
               onSelectSubscription={handleSubscriptionSelect}
             />
-            <Button
-              variant="secondary"
-              label="No encuentro mi suscripción"
+            <Pressable
+              className="h-12 rounded-2xl items-center justify-center bg-black/[0.03] active:bg-black/[0.05]"
               onPress={() => {
                 setTransactionMode("expense");
                 setShowSubscriptionSelector(false);
               }}
-            />
+            >
+              <Text className="text-black font-medium">
+                No encuentro mi suscripción
+              </Text>
+            </Pressable>
           </View>
         )}
 
@@ -362,7 +364,12 @@ export function MainForm({
         </View>
 
         {/* Botón de guardar */}
-        <Button label="Guardar" onPress={onSubmit} className="mt-4" />
+        <Pressable
+          className="h-12 rounded-full items-center justify-center bg-black active:bg-black/90"
+          onPress={onSubmit}
+        >
+          <Text className="text-white font-medium">Guardar</Text>
+        </Pressable>
       </View>
     </ScrollView>
   );
