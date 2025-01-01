@@ -8,6 +8,7 @@ import {
   TrendingUp,
   Clock,
 } from "lucide-react-native";
+import { TRANSACTION_CATEGORIES } from "../../constants/categories";
 
 interface DailySpending {
   date: Date;
@@ -43,6 +44,13 @@ export function FinancialInsights({
       ? ((monthlyTotal - previousMonthTotal) / previousMonthTotal) * 100
       : 0;
   const isSpendingUp = spendingChange > 0;
+
+  const getCategoryName = (categoryId: string) => {
+    return (
+      TRANSACTION_CATEGORIES.find((cat) => cat.id === categoryId)?.name ||
+      categoryId
+    );
+  };
 
   return (
     <View className="space-y-4 px-4 pt-4">
@@ -121,7 +129,9 @@ export function FinancialInsights({
           topCategories.map((category) => (
             <View key={category.category} className="mb-2">
               <View className="flex-row justify-between items-center mb-1">
-                <Text className="text-black">{category.category}</Text>
+                <Text className="text-black">
+                  {getCategoryName(category.category)}
+                </Text>
                 <View className="flex-row items-center">
                   <Text className="text-black font-medium">
                     ${category.total.toLocaleString()}
