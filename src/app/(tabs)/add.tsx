@@ -1,28 +1,24 @@
 import React, { useState } from "react";
-import { Alert } from "react-native";
-import { ElevatedBaseModal } from "../ElevatedBaseModal";
-import { CategorySelector } from "./CategorySelector";
-import { BankSelector } from "./BankSelector";
-import { RecurrencySelector } from "./RecurrencySelector";
-import { MainForm } from "./MainForm";
+import { Alert, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { CategorySelector } from "../../components/AddTransaction/CategorySelector";
+import { BankSelector } from "../../components/AddTransaction/BankSelector";
+import { RecurrencySelector } from "../../components/AddTransaction/RecurrencySelector";
+import { MainForm } from "../../components/AddTransaction/MainForm";
 import { useTransactions } from "../../hooks/useTransactions";
 import { useBanks } from "../../hooks/useBanks";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../lib/supabase";
 import {
   Transaction,
-  AddTransactionModalProps,
   TransactionFormData,
 } from "../../types/transaction.types";
 import { ModalView } from "../../types/common.types";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { router } from "expo-router";
 
-export function AddTransactionModal({
-  visible,
-  onClose,
-  onSuccess,
-}: AddTransactionModalProps) {
+export default function AddTransactionTab() {
   const { addTransaction } = useTransactions();
   const { banks, refreshBanks } = useBanks();
   const { session } = useAuth();
@@ -57,10 +53,8 @@ export function AddTransactionModal({
   const [isAccountListVisible, setIsAccountListVisible] = useState(false);
 
   React.useEffect(() => {
-    if (visible) {
-      refreshBanks();
-    }
-  }, [visible]);
+    refreshBanks();
+  }, []);
 
   const handleSubmit = async () => {
     try {
@@ -131,9 +125,8 @@ export function AddTransactionModal({
         accountNumber: formData.accountNumber,
       });
 
-      await onSuccess?.();
       Alert.alert("Éxito", "Transacción agregada correctamente");
-      handleClose();
+      router.push("/");
     } catch (error) {
       console.error("Error adding transaction:", error);
       Alert.alert("Error", "No se pudo agregar la transacción");
@@ -169,35 +162,6 @@ export function AddTransactionModal({
     });
 
     setCurrentView("main");
-  };
-
-  const handleClose = () => {
-    setFormData({
-      type: "expense",
-      category: "",
-      subcategory: "",
-      name: "",
-      amount: "",
-      date: new Date(),
-      selectedBank: null,
-      selectedAccount: null,
-      selectedCard: null,
-      bankName: "",
-      accountNumber: "",
-      cardLastFour: "",
-      cardType: "debit",
-      isRecurrent: false,
-      recurrentConfig: {
-        frequency: "monthly",
-        customDays: 0,
-      },
-      otherCategorySuggestion: "",
-    });
-    setSelectedBank(null);
-    setSelectedAccount(null);
-    setSelectedCard(null);
-    setCurrentView("main");
-    onClose();
   };
 
   const renderContent = () => {
@@ -245,19 +209,8 @@ export function AddTransactionModal({
   };
 
   return (
-    <ElevatedBaseModal
-      visible={visible}
-      onClose={handleClose}
-      onBack={currentView !== "main" ? () => setCurrentView("main") : undefined}
-      title={
-        currentView === "main"
-          ? "Nueva Transacción"
-          : currentView === "categorySelection"
-          ? "Seleccionar Categoría"
-          : "Seleccionar Cuenta"
-      }
-    >
-      {renderContent()}
-    </ElevatedBaseModal>
+    <SafeAreaView edges={["top"]} className="flex-1 bg-background">
+      <View className="flex-1 px-6">{renderContent()}</View>
+    </SafeAreaView>
   );
 }

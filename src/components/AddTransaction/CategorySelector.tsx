@@ -20,17 +20,16 @@ export function CategorySelector({
 
   return (
     <View className="flex-1">
-      <ScrollView className="max-h-[600px] mb-[80px]">
-        <View className="space-y-4">
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+        <View className="space-y-6">
           {TRANSACTION_CATEGORIES.map((category) => (
             <View key={category.id}>
               <Pressable
-                className={`p-4 rounded-xl ${
-                  formData.category === category.id ||
-                  expandedCategory === category.id
-                    ? "bg-veryPaleBlue"
-                    : "bg-veryPaleBlue/20"
-                } flex-row items-center justify-between`}
+                className={`p-4 rounded-full flex-row items-center justify-between ${
+                  formData.category === category.id
+                    ? "bg-black"
+                    : "bg-black/[0.03]"
+                } active:bg-black/[0.05]`}
                 onPress={() => {
                   if (formData.category === category.id) {
                     setExpandedCategory(
@@ -48,13 +47,28 @@ export function CategorySelector({
                 }}
               >
                 <View className="flex-row items-center flex-1">
-                  <Tag size={20} color="#755bce" />
-                  <Text className="text-textPrimary ml-3">{category.name}</Text>
+                  <Tag
+                    size={20}
+                    color={
+                      formData.category === category.id ? "white" : "black"
+                    }
+                  />
+                  <Text
+                    className={`ml-3 font-medium ${
+                      formData.category === category.id
+                        ? "text-white"
+                        : "text-black"
+                    }`}
+                  >
+                    {category.name}
+                  </Text>
                 </View>
                 {category.subcategories && (
                   <ChevronRight
                     size={20}
-                    color="#755bce"
+                    color={
+                      formData.category === category.id ? "white" : "black"
+                    }
                     style={{
                       transform: [
                         {
@@ -68,15 +82,15 @@ export function CategorySelector({
               </Pressable>
 
               {expandedCategory === category.id && category.subcategories && (
-                <View className="pl-4 mt-2 space-y-2">
+                <View className="ml-4 mt-2 space-y-2">
                   {category.subcategories.map((subcategory) => (
                     <Pressable
                       key={subcategory.id}
-                      className={`p-4 rounded-xl ${
+                      className={`p-4 rounded-full ${
                         formData.subcategory === subcategory.id
-                          ? "bg-veryPaleBlue"
-                          : "bg-veryPaleBlue/20"
-                      }`}
+                          ? "bg-black/[0.05]"
+                          : "bg-black/[0.02]"
+                      } active:bg-black/[0.07]`}
                       onPress={() =>
                         setFormData({
                           ...formData,
@@ -84,23 +98,20 @@ export function CategorySelector({
                         })
                       }
                     >
-                      <Text className="text-textPrimary">
-                        {subcategory.name}
-                      </Text>
+                      <Text className="text-black">{subcategory.name}</Text>
                     </Pressable>
                   ))}
                 </View>
               )}
 
               {formData.category === "other" && category.id === "other" && (
-                <View className="pl-4 mt-2">
-                  <Text className="text-textSecondary mb-2 text-sm">
+                <View className="ml-4 mt-2">
+                  <Text className="text-black/60 mb-2 text-sm">
                     ¿La categoría que buscas no está? Escríbela para que
-                    nuestros desarrolladores la vean y la agreguen. ¡Ayúdanos a
-                    mejorar!
+                    nuestros desarrolladores la vean y la agreguen.
                   </Text>
                   <TextInput
-                    className="bg-veryPaleBlue/10 text-textPrimary p-4 rounded-xl"
+                    className="bg-black/[0.03] text-black p-4 rounded-full"
                     value={formData.otherCategorySuggestion}
                     onChangeText={(text) =>
                       setFormData({
@@ -109,7 +120,7 @@ export function CategorySelector({
                       })
                     }
                     placeholder="Escribe tu sugerencia de categoría"
-                    placeholderTextColor="#755bce/75"
+                    placeholderTextColor="#00000066"
                   />
                 </View>
               )}
@@ -118,9 +129,9 @@ export function CategorySelector({
         </View>
       </ScrollView>
 
-      <View className="absolute bottom-0 left-0 right-0 p-4 bg-white">
+      <View className="p-4 bg-white">
         <Pressable
-          className={`bg-moderateBlue p-4 rounded-xl ${
+          className={`bg-black p-4 rounded-full ${
             !formData.category ||
             (formData.category === "other" && !formData.otherCategorySuggestion)
               ? "opacity-50"
@@ -132,9 +143,7 @@ export function CategorySelector({
             (formData.category === "other" && !formData.otherCategorySuggestion)
           }
         >
-          <Text className="text-white text-center font-semibold">
-            Confirmar Selección
-          </Text>
+          <Text className="text-white text-center font-medium">Confirmar</Text>
         </Pressable>
       </View>
     </View>

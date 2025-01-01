@@ -4,7 +4,6 @@ import { Header } from "../../components/Header";
 import { useBankAccounts } from "../../context/BankAccountsContext";
 import { useEffect } from "react";
 import { CalendarScreen } from "../../screens/CalendarScreen";
-import { FloatingActionButton } from "../../components/FloatingActionButton";
 
 export default function TabCalendarScreen() {
   const { fetchBankAccounts } = useBankAccounts();
@@ -21,7 +20,6 @@ export default function TabCalendarScreen() {
           <CalendarScreen />
         </View>
       </SafeAreaView>
-      <FloatingActionButton />
     </View>
   );
 }

@@ -26,7 +26,7 @@ export const SubscriptionSelector: React.FC<SubscriptionSelectorProps> = ({
   const serviceTypes = ["streaming", "music", "cloud"] as const;
 
   return (
-    <View className="space-y-4">
+    <View className="space-y-6">
       {/* Filtros por tipo de servicio */}
       <ScrollView
         horizontal
@@ -36,12 +36,12 @@ export const SubscriptionSelector: React.FC<SubscriptionSelectorProps> = ({
         <TouchableOpacity
           onPress={() => setSelectedType(null)}
           className={`px-4 py-2 rounded-full ${
-            selectedType === null ? "bg-moderateBlue" : "bg-veryPaleBlue/20"
-          }`}
+            selectedType === null ? "bg-black" : "bg-black/[0.03]"
+          } active:bg-black/[0.05]`}
         >
           <Text
             className={`text-sm font-medium ${
-              selectedType === null ? "text-white" : "text-textPrimary"
+              selectedType === null ? "text-white" : "text-black"
             }`}
           >
             Todos
@@ -52,12 +52,12 @@ export const SubscriptionSelector: React.FC<SubscriptionSelectorProps> = ({
             key={type}
             onPress={() => setSelectedType(type)}
             className={`px-4 py-2 rounded-full ${
-              selectedType === type ? "bg-moderateBlue" : "bg-veryPaleBlue/20"
-            }`}
+              selectedType === type ? "bg-black" : "bg-black/[0.03]"
+            } active:bg-black/[0.05]`}
           >
             <Text
               className={`text-sm font-medium ${
-                selectedType === type ? "text-white" : "text-textPrimary"
+                selectedType === type ? "text-white" : "text-black"
               }`}
             >
               {type === "streaming"
@@ -76,16 +76,28 @@ export const SubscriptionSelector: React.FC<SubscriptionSelectorProps> = ({
           <TouchableOpacity
             key={subscription.id}
             onPress={() => onSelectSubscription(subscription)}
-            className={`p-4 rounded-lg border ${
+            className={`p-4 rounded-full ${
               selectedSubscription?.id === subscription.id
-                ? "border-moderateBlue bg-veryPaleBlue"
-                : "border-gray-200"
-            }`}
+                ? "bg-black"
+                : "bg-black/[0.03]"
+            } active:bg-black/[0.05]`}
           >
-            <Text className="font-medium text-base text-textPrimary">
+            <Text
+              className={`font-medium ${
+                selectedSubscription?.id === subscription.id
+                  ? "text-white"
+                  : "text-black"
+              }`}
+            >
               {subscription.name}
             </Text>
-            <Text className="text-sm text-textSecondary">
+            <Text
+              className={`text-sm ${
+                selectedSubscription?.id === subscription.id
+                  ? "text-white/60"
+                  : "text-black/60"
+              }`}
+            >
               {subscription.service_type === "streaming"
                 ? "Streaming"
                 : subscription.service_type === "music"

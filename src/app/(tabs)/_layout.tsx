@@ -1,7 +1,8 @@
 import { Tabs, useRouter } from "expo-router";
-import { CalendarDays, CreditCard } from "lucide-react-native";
+import { CalendarDays, CreditCard, Plus } from "lucide-react-native";
 import { useAuth } from "../../context/AuthContext";
 import { useEffect } from "react";
+import { Pressable, View } from "react-native";
 
 export default function TabsLayout() {
   const { session, isLoading } = useAuth();
@@ -37,6 +38,22 @@ export default function TabsLayout() {
           title: "Calendario",
           tabBarIcon: ({ color, size }) => (
             <CalendarDays size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="add"
+        options={{
+          tabBarLabel: "",
+          tabBarIcon: () => (
+            <View className="relative -top-4">
+              <Pressable
+                onPress={() => router.navigate("add")}
+                className="w-14 h-14 bg-black rounded-full items-center justify-center shadow-sm shadow-black/20"
+              >
+                <Plus size={24} color="white" />
+              </Pressable>
+            </View>
           ),
         }}
       />

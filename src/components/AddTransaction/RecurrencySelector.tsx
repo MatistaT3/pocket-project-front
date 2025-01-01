@@ -24,14 +24,12 @@ export function RecurrencySelector({
   setFormData,
 }: RecurrencySelectorProps) {
   return (
-    <View className="bg-veryPaleBlue/10 p-4 rounded-xl">
+    <View className=" p-4 rounded-full">
       <View className="flex-row items-center justify-between mb-4">
-        <Text className="text-textSecondary">Transacción Recurrente</Text>
-        <View className="flex-row bg-veryPaleBlue/20 rounded-xl overflow-hidden">
+        <Text className="text-black/60">Transacción Recurrente</Text>
+        <View className="flex-row bg-black/[0.03] rounded-full overflow-hidden">
           <Pressable
-            className={`px-4 py-2 ${
-              formData.isRecurrent ? "bg-veryPaleBlue" : ""
-            }`}
+            className={`px-4 py-2 ${formData.isRecurrent ? "bg-black" : ""}`}
             onPress={() =>
               setFormData({
                 ...formData,
@@ -39,12 +37,14 @@ export function RecurrencySelector({
               })
             }
           >
-            <Text className="text-textPrimary">Sí</Text>
+            <Text
+              className={formData.isRecurrent ? "text-white" : "text-black"}
+            >
+              Sí
+            </Text>
           </Pressable>
           <Pressable
-            className={`px-4 py-2 ${
-              !formData.isRecurrent ? "bg-veryPaleBlue" : ""
-            }`}
+            className={`px-4 py-2 ${!formData.isRecurrent ? "bg-black" : ""}`}
             onPress={() =>
               setFormData({
                 ...formData,
@@ -52,23 +52,27 @@ export function RecurrencySelector({
               })
             }
           >
-            <Text className="text-textPrimary">No</Text>
+            <Text
+              className={!formData.isRecurrent ? "text-white" : "text-black"}
+            >
+              No
+            </Text>
           </Pressable>
         </View>
       </View>
 
       {formData.isRecurrent && (
         <View className="space-y-4">
-          <Text className="text-textSecondary">Frecuencia</Text>
+          <Text className="text-black/60 text-sm">Frecuencia</Text>
           <View className="flex-row flex-wrap gap-2">
             {frequencies.map((freq) => (
               <Pressable
                 key={freq.value}
-                className={`px-4 py-2 rounded-xl ${
+                className={`px-4 py-2 rounded-full ${
                   formData.recurrentConfig.frequency === freq.value
-                    ? "bg-veryPaleBlue"
-                    : "bg-veryPaleBlue/20"
-                }`}
+                    ? "bg-black"
+                    : "bg-black/[0.03]"
+                } active:bg-black/[0.05]`}
                 onPress={() =>
                   setFormData({
                     ...formData,
@@ -79,16 +83,26 @@ export function RecurrencySelector({
                   })
                 }
               >
-                <Text className="text-textPrimary">{freq.label}</Text>
+                <Text
+                  className={
+                    formData.recurrentConfig.frequency === freq.value
+                      ? "text-white"
+                      : "text-black"
+                  }
+                >
+                  {freq.label}
+                </Text>
               </Pressable>
             ))}
           </View>
 
           {formData.recurrentConfig.frequency === "custom" && (
             <View>
-              <Text className="text-textSecondary mb-2">Cada cuántos días</Text>
+              <Text className="text-black/60 mb-2 text-sm">
+                Cada cuántos días
+              </Text>
               <TextInput
-                className="bg-veryPaleBlue/10 text-textPrimary p-4 rounded-xl"
+                className="bg-black/[0.03] text-black p-4 rounded-full"
                 value={formData.recurrentConfig.customDays.toString()}
                 onChangeText={(text) =>
                   setFormData({
@@ -101,7 +115,7 @@ export function RecurrencySelector({
                 }
                 keyboardType="number-pad"
                 placeholder="Número de días"
-                placeholderTextColor="#755bce/75"
+                placeholderTextColor="#00000066"
               />
             </View>
           )}

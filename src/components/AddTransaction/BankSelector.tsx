@@ -48,11 +48,11 @@ export function BankSelector({
   if (banks.length === 0) {
     return (
       <View className="items-center justify-center py-8 space-y-4">
-        <CreditCard size={48} color="#755bce" />
-        <Text className="text-textPrimary text-center text-lg font-medium">
+        <CreditCard size={48} color="black" />
+        <Text className="text-black text-center text-lg font-medium">
           No hay cuentas disponibles
         </Text>
-        <Text className="text-textSecondary text-center px-4">
+        <Text className="text-black/60 text-center px-4">
           Dirígete a la sección "Cuentas" en la barra de navegación para agregar
           tus cuentas y tarjetas.
         </Text>
@@ -61,24 +61,24 @@ export function BankSelector({
   }
 
   return (
-    <ScrollView className="max-h-[600px]">
-      <View className="space-y-4">
+    <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+      <View className="space-y-6">
         {/* Selección de banco */}
         <View>
-          <Text className="text-textSecondary mb-2">Banco</Text>
+          <Text className="text-black/60 mb-2 text-sm">Banco</Text>
           <Pressable
-            className="flex-row items-center justify-between bg-veryPaleBlue/10 p-4 rounded-xl"
+            className="flex-row items-center justify-between bg-black/[0.03] p-4 rounded-full active:bg-black/[0.05]"
             onPress={() => setIsBankListVisible(!isBankListVisible)}
           >
             <View className="flex-row items-center">
-              <Building2 size={20} color="#755bce" />
-              <Text className="text-textPrimary ml-3">
+              <Building2 size={20} color="black" />
+              <Text className="text-black ml-3">
                 {selectedBankData?.name || "Selecciona un banco"}
               </Text>
             </View>
             <ChevronRight
               size={20}
-              color="#755bce"
+              color="black"
               style={{
                 transform: [{ rotate: isBankListVisible ? "90deg" : "0deg" }],
               }}
@@ -90,11 +90,9 @@ export function BankSelector({
               {banks.map((bank) => (
                 <Pressable
                   key={bank.id}
-                  className={`p-4 rounded-xl ${
-                    selectedBank === bank.id
-                      ? "bg-veryPaleBlue"
-                      : "bg-veryPaleBlue/20"
-                  }`}
+                  className={`p-4 rounded-full ${
+                    selectedBank === bank.id ? "bg-black" : "bg-black/[0.03]"
+                  } active:bg-black/[0.05]`}
                   onPress={() => {
                     setSelectedBank(bank.id);
                     setSelectedAccount(null);
@@ -102,7 +100,13 @@ export function BankSelector({
                     setIsBankListVisible(false);
                   }}
                 >
-                  <Text className="text-textPrimary">{bank.name}</Text>
+                  <Text
+                    className={
+                      selectedBank === bank.id ? "text-white" : "text-black"
+                    }
+                  >
+                    {bank.name}
+                  </Text>
                 </Pressable>
               ))}
             </View>
@@ -112,14 +116,14 @@ export function BankSelector({
         {/* Selección de cuenta */}
         {selectedBank && (
           <View>
-            <Text className="text-textSecondary mb-2">Cuenta</Text>
+            <Text className="text-black/60 mb-2 text-sm">Cuenta</Text>
             <Pressable
-              className="flex-row items-center justify-between bg-veryPaleBlue/10 p-4 rounded-xl"
+              className="flex-row items-center justify-between bg-black/[0.03] p-4 rounded-full active:bg-black/[0.05]"
               onPress={() => setIsAccountListVisible(!isAccountListVisible)}
             >
               <View className="flex-row items-center">
-                <CreditCard size={20} color="#755bce" />
-                <Text className="text-textPrimary ml-3">
+                <CreditCard size={20} color="black" />
+                <Text className="text-black ml-3">
                   {selectedAccountData
                     ? `Cuenta: ${selectedAccountData.accountNumber}`
                     : "Selecciona una cuenta"}
@@ -127,7 +131,7 @@ export function BankSelector({
               </View>
               <ChevronRight
                 size={20}
-                color="#755bce"
+                color="black"
                 style={{
                   transform: [
                     { rotate: isAccountListVisible ? "90deg" : "0deg" },
@@ -141,22 +145,34 @@ export function BankSelector({
                 {selectedBankData?.accounts.map((account) => (
                   <Pressable
                     key={account.id}
-                    className={`p-4 rounded-xl ${
+                    className={`p-4 rounded-full ${
                       selectedAccount === account.id
-                        ? "bg-veryPaleBlue"
-                        : "bg-veryPaleBlue/20"
-                    }`}
+                        ? "bg-black"
+                        : "bg-black/[0.03]"
+                    } active:bg-black/[0.05]`}
                     onPress={() => {
                       setSelectedAccount(account.id);
                       setSelectedCard(null);
                       setIsAccountListVisible(false);
                     }}
                   >
-                    <Text className="text-textPrimary">
+                    <Text
+                      className={
+                        selectedAccount === account.id
+                          ? "text-white"
+                          : "text-black"
+                      }
+                    >
                       Cuenta: {account.accountNumber}
                     </Text>
-                    <Text className="text-textSecondary text-sm">
-                      Saldo: ${account.currentBalance.toFixed(2)}
+                    <Text
+                      className={`text-sm ${
+                        selectedAccount === account.id
+                          ? "text-white/60"
+                          : "text-black/60"
+                      }`}
+                    >
+                      Saldo: ${account.currentBalance.toLocaleString("es-CL")}
                     </Text>
                   </Pressable>
                 ))}
@@ -170,22 +186,30 @@ export function BankSelector({
           selectedAccount &&
           selectedAccountData?.cards.length > 0 && (
             <View>
-              <Text className="text-textSecondary mb-2">Tarjeta</Text>
+              <Text className="text-black/60 mb-2 text-sm">Tarjeta</Text>
               <View className="space-y-2">
                 {selectedAccountData.cards.map((card) => (
                   <Pressable
                     key={card.id}
-                    className={`p-3 rounded-xl ${
-                      selectedCard === card.id
-                        ? "bg-veryPaleBlue"
-                        : "bg-veryPaleBlue/20"
-                    }`}
+                    className={`p-4 rounded-full ${
+                      selectedCard === card.id ? "bg-black" : "bg-black/[0.03]"
+                    } active:bg-black/[0.05]`}
                     onPress={() => setSelectedCard(card.id)}
                   >
-                    <Text className="text-textPrimary">
+                    <Text
+                      className={
+                        selectedCard === card.id ? "text-white" : "text-black"
+                      }
+                    >
                       •••• {card.lastFourDigits}
                     </Text>
-                    <Text className="text-textSecondary capitalize">
+                    <Text
+                      className={`text-sm capitalize ${
+                        selectedCard === card.id
+                          ? "text-white/60"
+                          : "text-black/60"
+                      }`}
+                    >
                       {card.type}
                     </Text>
                   </Pressable>
@@ -196,12 +220,12 @@ export function BankSelector({
 
         {/* Botón de confirmar */}
         <Pressable
-          className={`p-4 rounded-xl mt-4 ${
+          className={`p-4 rounded-full ${
             selectedBank &&
             selectedAccount &&
             (formData.type !== "expense" || selectedCard)
-              ? "bg-moderateBlue"
-              : "bg-moderateBlue/50"
+              ? "bg-black"
+              : "bg-black/50"
           }`}
           onPress={onConfirm}
           disabled={
@@ -210,9 +234,7 @@ export function BankSelector({
             (formData.type === "expense" && !selectedCard)
           }
         >
-          <Text className="text-white text-center font-semibold">
-            Confirmar Selección
-          </Text>
+          <Text className="text-white text-center font-medium">Confirmar</Text>
         </Pressable>
       </View>
     </ScrollView>
