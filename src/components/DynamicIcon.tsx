@@ -19,6 +19,9 @@ import YoutubeMusicLogo from "./Logo/YoutubeMusicLogo";
 import GoogleOneLogo from "./Logo/GoogleOneLogo";
 import ICloudLogo from "./Logo/ICloudLogo";
 import SmartFitLogo from "./Logo/SmartFitLogo";
+import IncomeLogo from "./Logo/IncomeLogo";
+import ExpenseLogo from "./Logo/ExpenseLogo";
+
 const subscriptionLogos: {
   [key: string]: React.ComponentType<{ width: number; height: number }>;
 } = {
@@ -72,10 +75,11 @@ export function DynamicIcon({
   // Fallback al ícono por defecto
   return (
     <View style={{ width: size, height: size }}>
-      <CircleDollarSign
-        size={size}
-        color={fallbackType === "income" ? "#4CAF50" : "#F44336"}
-      />
+      {fallbackType === "income" ? (
+        <IncomeLogo width={size} height={size} color={"#4CAF50"} />
+      ) : (
+        <ExpenseLogo width={size} height={size} color={"#F44336"} />
+      )}
     </View>
   );
 }
