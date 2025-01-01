@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, Pressable, Text, TextInput, ScrollView } from "react-native";
+import {
+  View,
+  Pressable,
+  Text,
+  TextInput,
+  ScrollView,
+  Alert,
+} from "react-native";
 import {
   Tag,
   ChevronRight,
@@ -19,6 +26,8 @@ import { SubscriptionSelector } from "./SubscriptionSelector";
 import { Subscription } from "../../constants/subscriptions";
 import { router, useNavigation, useLocalSearchParams } from "expo-router";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { useRecurrentTransactions } from "../../hooks/useRecurrentTransactions";
+import { FREQUENCY_PRESETS } from "../../types/recurrent.types";
 
 interface MainFormProps {
   formData: TransactionFormData;
@@ -36,6 +45,7 @@ export function MainForm({
   setCurrentView,
 }: MainFormProps) {
   const navigation = useNavigation();
+  const { addRecurrentTransaction } = useRecurrentTransactions();
   const params = useLocalSearchParams<{
     selectedDate?: string;
     selectedCategory?: string;
@@ -102,6 +112,36 @@ export function MainForm({
       subcategory: subscription.subcategory,
     });
     setShowSubscriptionSelector(false);
+  };
+
+  const handleSubmit = async () => {
+    if (formData.isRecurrent) {
+      // Si es una transacción recurrente, primero creamos la transacción recurrente
+      const success = await addRecurrentTransaction({
+        type: formData.type,
+        category: formData.category,
+        subcategory: formData.subcategory,
+        name: formData.name,
+        amount: parseFloat(formData.amount),
+        frequency_days:
+          formData.recurrentConfig.frequency === "custom"
+            ? formData.recurrentConfig.customDays || 0
+            : FREQUENCY_PRESETS[formData.recurrentConfig.frequency],
+        start_date: formData.date.toISOString().split("T")[0],
+        payment_bank: formData.bankName,
+        payment_last_four: formData.cardLastFour,
+        payment_type: formData.cardType,
+        account_number: formData.accountNumber,
+      });
+
+      if (!success) {
+        Alert.alert("Error", "No se pudo crear la transacción recurrente");
+        return;
+      }
+    }
+
+    // Continuamos con el submit normal
+    onSubmit();
   };
 
   return (
@@ -366,7 +406,7 @@ export function MainForm({
         {/* Botón de guardar */}
         <Pressable
           className="h-12 rounded-full items-center justify-center bg-black active:bg-black/90"
-          onPress={onSubmit}
+          onPress={handleSubmit}
         >
           <Text className="text-white font-medium">Guardar</Text>
         </Pressable>

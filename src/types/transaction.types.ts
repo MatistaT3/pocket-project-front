@@ -1,3 +1,5 @@
+import { FrequencyType } from "./recurrent.types";
+
 export type TransactionType = "expense" | "income";
 
 export interface PaymentMethod {
@@ -5,12 +7,6 @@ export interface PaymentMethod {
   lastFourDigits: string;
   type: "credit" | "debit";
   accountNumber: string;
-}
-
-export interface RecurrentConfig {
-  frequency: RecurrencyFrequency;
-  startDate: string;
-  customDays?: number;
 }
 
 export interface Transaction {
@@ -25,7 +21,8 @@ export interface Transaction {
     svg_path: string;
   };
   paymentMethod: PaymentMethod;
-  recurrent?: RecurrentConfig;
+  is_recurrent: boolean;
+  recurrent_transaction_id?: string;
 }
 
 // Props interfaces
@@ -51,8 +48,8 @@ export interface TransactionFormData {
   cardType: "credit" | "debit";
   isRecurrent: boolean;
   recurrentConfig: {
-    frequency: RecurrencyFrequency;
-    customDays: number;
+    frequency: FrequencyType;
+    customDays?: number;
   };
   otherCategorySuggestion: string;
 }

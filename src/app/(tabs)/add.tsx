@@ -110,6 +110,8 @@ export default function AddTransactionTab() {
           type: formData.cardType,
           accountNumber: formData.selectedAccount,
         },
+        is_recurrent: formData.isRecurrent,
+
         ...(formData.isRecurrent && {
           recurrent: {
             frequency: formData.recurrentConfig.frequency,

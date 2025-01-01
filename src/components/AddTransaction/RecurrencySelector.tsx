@@ -1,21 +1,20 @@
 import React from "react";
 import { View, Pressable, Text, TextInput } from "react-native";
-import {
-  TransactionFormData,
-  RecurrencyFrequency,
-} from "../../types/transaction.types";
+import { TransactionFormData } from "../../types/transaction.types";
+import { FREQUENCY_PRESETS, FrequencyType } from "../../types/recurrent.types";
 
 interface RecurrencySelectorProps {
   formData: TransactionFormData;
   setFormData: (data: TransactionFormData) => void;
 }
 
-const frequencies: { label: string; value: RecurrencyFrequency }[] = [
-  { label: "Diario", value: "daily" },
+const frequencies: { label: string; value: FrequencyType }[] = [
+  { label: "Semanal", value: "weekly" },
   { label: "Mensual", value: "monthly" },
   { label: "Bimestral", value: "bimonthly" },
   { label: "Trimestral", value: "quarterly" },
   { label: "Semestral", value: "semiannual" },
+  { label: "Anual", value: "annual" },
   { label: "Personalizado", value: "custom" },
 ];
 
@@ -23,8 +22,19 @@ export function RecurrencySelector({
   formData,
   setFormData,
 }: RecurrencySelectorProps) {
+  const handleFrequencyChange = (freq: FrequencyType) => {
+    setFormData({
+      ...formData,
+      recurrentConfig: {
+        frequency: freq,
+        customDays:
+          FREQUENCY_PRESETS[freq] || formData.recurrentConfig.customDays,
+      },
+    });
+  };
+
   return (
-    <View className=" p-4 rounded-full">
+    <View className="p-4 rounded-full">
       <View className="flex-row items-center justify-between mb-4">
         <Text className="text-black/60">Transacción Recurrente</Text>
         <View className="flex-row bg-black/[0.03] rounded-full overflow-hidden">
@@ -73,15 +83,7 @@ export function RecurrencySelector({
                     ? "bg-black"
                     : "bg-black/[0.03]"
                 } active:bg-black/[0.05]`}
-                onPress={() =>
-                  setFormData({
-                    ...formData,
-                    recurrentConfig: {
-                      ...formData.recurrentConfig,
-                      frequency: freq.value,
-                    },
-                  })
-                }
+                onPress={() => handleFrequencyChange(freq.value)}
               >
                 <Text
                   className={
@@ -103,7 +105,7 @@ export function RecurrencySelector({
               </Text>
               <TextInput
                 className="bg-black/[0.03] text-black p-4 rounded-full"
-                value={formData.recurrentConfig.customDays.toString()}
+                value={formData.recurrentConfig.customDays?.toString() || ""}
                 onChangeText={(text) =>
                   setFormData({
                     ...formData,
