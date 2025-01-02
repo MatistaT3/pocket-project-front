@@ -148,7 +148,7 @@ export function MainForm({
               ? formData.recurrentConfig.customDays || 0
               : null,
           frequency_name: formData.recurrentConfig.frequency,
-          start_date: formData.date.toISOString().split("T")[0],
+          start_date: toAPIDate(formData.date),
           payment_bank: formData.bankName,
           payment_last_four: formData.cardLastFour,
           payment_type: formData.cardType,

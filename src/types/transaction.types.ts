@@ -10,7 +10,7 @@ export interface PaymentMethod {
 }
 
 export interface Transaction {
-  id: number;
+  id: number | string;
   user_id: string;
   type: TransactionType;
   category: string | null;
@@ -20,6 +20,8 @@ export interface Transaction {
   date: string;
   created_at: string;
   is_recurrent: boolean;
+  is_virtual_recurrent?: boolean;
+  original_transaction?: Transaction;
   total_spent: number | null;
   payment_bank: string;
   payment_last_four: string;
@@ -31,6 +33,13 @@ export interface Transaction {
   } | null;
   account_number: string;
   recurrent_transaction_id: string | null;
+  recurrent_transaction?: {
+    id: string;
+    frequency_name: FrequencyType;
+    frequency_days: number | null;
+    start_date: string;
+    end_date?: string;
+  } | null;
 }
 
 // Props interfaces
