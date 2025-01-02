@@ -3,18 +3,17 @@ import { View, Pressable, Text, TextInput, ScrollView } from "react-native";
 import { Tag, ChevronRight } from "lucide-react-native";
 import { TRANSACTION_CATEGORIES } from "../../constants/categories";
 import { TransactionFormData } from "../../types/transaction.types";
-import { ModalView } from "../../types/common.types";
 
 interface CategorySelectorProps {
   formData: TransactionFormData;
   setFormData: (data: TransactionFormData) => void;
-  setCurrentView: (view: ModalView) => void;
+  onConfirm: () => void;
 }
 
 export function CategorySelector({
   formData,
   setFormData,
-  setCurrentView,
+  onConfirm,
 }: CategorySelectorProps) {
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
 
@@ -137,7 +136,7 @@ export function CategorySelector({
               ? "opacity-50"
               : ""
           }`}
-          onPress={() => setCurrentView("main")}
+          onPress={onConfirm}
           disabled={
             !formData.category ||
             (formData.category === "other" && !formData.otherCategorySuggestion)

@@ -75,7 +75,7 @@ export function TransactionDetails({
           style: "destructive",
           onPress: async () => {
             const success = await deleteTransaction(transaction.id, {
-              accountNumber: transaction.paymentMethod.accountNumber,
+              accountNumber: transaction.account_number,
               amount: transaction.amount,
               type: transaction.type,
             });
@@ -176,8 +176,8 @@ export function TransactionDetails({
                     {transaction.name}
                   </Text>
                   <Text className="text-sm text-black/60">
-                    {transaction.paymentMethod.bank} ••••{" "}
-                    {transaction.paymentMethod.lastFourDigits}
+                    {transaction.payment_bank} ••••{" "}
+                    {transaction.payment_last_four}
                   </Text>
                 </View>
 

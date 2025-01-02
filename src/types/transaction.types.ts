@@ -10,24 +10,27 @@ export interface PaymentMethod {
 }
 
 export interface Transaction {
-  id: string;
+  id: number;
+  user_id: string;
   type: TransactionType;
-  category: string;
-  subcategory?: string;
+  category: string | null;
+  subcategory: string | null;
   name: string;
   amount: number;
   date: string;
-  icon_data?: {
-    svg_path: string;
-  };
-  paymentMethod: PaymentMethod;
+  created_at: string;
   is_recurrent: boolean;
-  recurrent?: {
-    frequency: string;
-    startDate?: string;
-    totalSpent?: number;
-  };
-  recurrent_transaction_id?: string;
+  total_spent: number | null;
+  payment_bank: string;
+  payment_last_four: string;
+  payment_type: "credit" | "debit";
+  icon_id: string;
+  icon?: {
+    svg_path: string;
+    name: string;
+  } | null;
+  account_number: string;
+  recurrent_transaction_id: string | null;
 }
 
 // Props interfaces

@@ -104,7 +104,7 @@ export function useRecurrentTransactions() {
         ...prev,
       ]);
 
-      return true;
+      return data.id;
     } catch (error) {
       console.error("Error adding recurrent transaction:", error);
       return false;

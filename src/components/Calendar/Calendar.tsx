@@ -7,7 +7,6 @@ import {
   eachDayOfInterval,
   startOfWeek,
   endOfWeek,
-  isSameDay,
   isToday,
 } from "date-fns";
 import { GestureDetector, Gesture } from "react-native-gesture-handler";
@@ -17,7 +16,12 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { TransactionDetails } from "./TransactionDetails";
-import { DATE_FORMAT, formatDate } from "../../utils/dateFormat";
+import {
+  DATE_FORMAT,
+  formatDate,
+  parseInputDate,
+  isSameDay,
+} from "../../utils/dateFormat";
 import { useTransactions } from "../../hooks/useTransactions";
 import { DynamicIcon } from "../DynamicIcon";
 import { useTransactionContext } from "../../context/TransactionContext";
@@ -58,16 +62,7 @@ export function Calendar({ onMonthChange }: CalendarProps) {
   const getTransactionsForDate = (dateInput: Date | string) => {
     try {
       const targetDate =
-        typeof dateInput === "string"
-          ? (() => {
-              const [day, month, year] = dateInput.split("/");
-              return new Date(
-                parseInt(year),
-                parseInt(month) - 1,
-                parseInt(day)
-              );
-            })()
-          : dateInput;
+        typeof dateInput === "string" ? parseInputDate(dateInput) : dateInput;
 
       if (!(targetDate instanceof Date) || isNaN(targetDate.getTime())) {
         throw new Error("Invalid date");
@@ -75,18 +70,8 @@ export function Calendar({ onMonthChange }: CalendarProps) {
 
       return transactions.filter((transaction) => {
         try {
-          const [day, month, year] = transaction.date.split("/");
-          const transactionDate = new Date(
-            parseInt(year),
-            parseInt(month) - 1,
-            parseInt(day)
-          );
-
-          return (
-            transactionDate.getDate() === targetDate.getDate() &&
-            transactionDate.getMonth() === targetDate.getMonth() &&
-            transactionDate.getFullYear() === targetDate.getFullYear()
-          );
+          const transactionDate = parseInputDate(transaction.date);
+          return isSameDay(transactionDate, targetDate);
         } catch {
           return false;
         }
@@ -140,7 +125,8 @@ export function Calendar({ onMonthChange }: CalendarProps) {
     setDetailsModalVisible(true);
   };
 
-  const handleDayPress = (day: any, event: any) => {
+  const handleDayPress = (day: Date, event: any) => {
+    setSelectedDate(formatDate(day));
     setDetailsModalVisible(true);
     setSelectedDay(day);
   };
@@ -185,8 +171,9 @@ export function Calendar({ onMonthChange }: CalendarProps) {
                       .map((date, dayIndex) => {
                         const isCurrentMonth =
                           date.getMonth() === currentDate.getMonth();
+                        const formattedDate = formatDate(date);
                         const transactionsForDate =
-                          getTransactionsForDate(date);
+                          getTransactionsForDate(formattedDate);
                         const hasTransactions = transactionsForDate.length > 0;
                         const displayTransactions = transactionsForDate.slice(
                           0,
@@ -195,12 +182,12 @@ export function Calendar({ onMonthChange }: CalendarProps) {
                         const hasMoreTransactions =
                           transactionsForDate.length > 2;
                         const isCurrentDay = isToday(date);
-                        const isSelected = selectedDate === formatDate(date);
+                        const isSelected = selectedDate === formattedDate;
 
                         return (
                           <Pressable
                             key={dayIndex}
-                            onPress={(event) => handleDayPress(date, event)}
+                            onPress={() => handleDayPress(date, null)}
                             className="flex-1 aspect-square items-center py-1.5"
                           >
                             <View className="relative flex items-center">
@@ -258,11 +245,6 @@ export function Calendar({ onMonthChange }: CalendarProps) {
                                           />
                                         </View>
                                       )
-                                    )}
-                                    {hasMoreTransactions && (
-                                      <Text className="text-gray-500 text-[10px] ml-0.5">
-                                        +{transactionsForDate.length - 2}
-                                      </Text>
                                     )}
                                   </View>
                                 )}
