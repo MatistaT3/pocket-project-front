@@ -25,7 +25,8 @@ export interface RecurrentTransaction {
   subcategory: string | null;
   name: string;
   amount: number;
-  frequency_days: number;
+  frequency_days: number | null;
+  frequency_name: FrequencyType;
   start_date: string;
   end_date?: string;
   last_generated_date?: string;
@@ -36,5 +37,4 @@ export interface RecurrentTransaction {
   is_active: boolean;
   created_at?: string;
   updated_at?: string;
-  icon_id: string;
 }

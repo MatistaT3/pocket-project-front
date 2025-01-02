@@ -146,14 +146,13 @@ export function MainForm({
           frequency_days:
             formData.recurrentConfig.frequency === "custom"
               ? formData.recurrentConfig.customDays || 0
-              : FREQUENCY_PRESETS[formData.recurrentConfig.frequency],
+              : null,
+          frequency_name: formData.recurrentConfig.frequency,
           start_date: formData.date.toISOString().split("T")[0],
           payment_bank: formData.bankName,
           payment_last_four: formData.cardLastFour,
           payment_type: formData.cardType,
           account_number: formData.accountNumber,
-          icon_id:
-            formData.type === "income" ? "default_income" : "default_expense",
         });
 
         if (!success) {
