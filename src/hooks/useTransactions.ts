@@ -13,7 +13,8 @@ export function useTransactions() {
   const shouldShowRecurrentTransaction = (
     startDate: string,
     currentDate: Date,
-    frequencyName: string
+    frequencyName: string,
+    frequencyDays?: number | null
   ) => {
     // Convertir ambas fechas a UTC para evitar problemas de zona horaria
     const start = new Date(startDate + "T12:00:00Z");
@@ -61,8 +62,11 @@ export function useTransactions() {
         );
         return dayDiff % 7 === 0;
       case "custom":
-        // Para custom, necesitaríamos frequency_days
-        return false;
+        if (!frequencyDays) return false;
+        const customDayDiff = Math.floor(
+          (current.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
+        );
+        return customDayDiff % frequencyDays === 0;
       default:
         return false;
     }
@@ -126,7 +130,8 @@ export function useTransactions() {
             shouldShowRecurrentTransaction(
               transaction.date,
               currentDate,
-              transaction.recurrent_transaction.frequency_name
+              transaction.recurrent_transaction.frequency_name,
+              transaction.recurrent_transaction.frequency_days
             )
           ) {
             // Crear una "instancia virtual" de la transacción recurrente
@@ -134,8 +139,8 @@ export function useTransactions() {
               ...transaction,
               id: `${transaction.id}_${toAPIDate(currentDate)}`,
               date: toDisplayDate(currentDate),
-              is_virtual_recurrent: true, // Flag para identificar instancias virtuales
-              original_transaction: transaction, // Mantener referencia a la transacción original
+              is_virtual_recurrent: true,
+              original_transaction: transaction,
             });
           }
         }
