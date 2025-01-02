@@ -63,6 +63,7 @@ export function useTransactions() {
         icon_data: item.icon,
         amount: item.amount,
         date: transformDateFormat(item.date),
+        is_recurrent: item.is_recurrent,
         recurrent: item.is_recurrent
           ? {
               frequency: item.recurrent_frequency,

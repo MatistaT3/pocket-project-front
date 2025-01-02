@@ -22,6 +22,11 @@ export interface Transaction {
   };
   paymentMethod: PaymentMethod;
   is_recurrent: boolean;
+  recurrent?: {
+    frequency: string;
+    startDate?: string;
+    totalSpent?: number;
+  };
   recurrent_transaction_id?: string;
 }
 
